@@ -1,0 +1,80 @@
+body {
+    background-color: #f8f9fa;
+    padding-top: 20px;
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.audio-player {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#msg-flash {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Flash messages */
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    min-width: 300px;
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* Search page styles */
+.search-results-count {
+    margin-bottom: 20px;
+    font-style: italic;
+    color: #666;
+}
+
+.audio-player {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.search-highlight {
+    background-color: #fffde7;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* Responsive search form */
+@media (max-width: 768px) {
+    .search-form {
+        margin-bottom: 15px;
+    }
+}
