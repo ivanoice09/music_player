@@ -1,8 +1,6 @@
-<?php require_once APP_ROOT . '/app/views/layouts/header.php'; ?>
+<?php include APP_ROOT . '/app/views/layouts/header.php'; ?>
 
 <div class="container">
-    <?php flash('register_success'); ?>
-    
     <h1 class="my-4">Welcome to <?php echo SITE_NAME; ?></h1>
     
     <?php if(!empty($data['featuredTracks'])): ?>
@@ -29,4 +27,4 @@
     <?php endif; ?>
 </div>
 
-<?php require_once APP_ROOT . '/app/views/layouts/footer.php'; ?>
+<?php include APP_ROOT . '/app/views/layouts/footer.php'; ?>

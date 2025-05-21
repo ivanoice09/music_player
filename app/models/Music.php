@@ -38,18 +38,19 @@ class Music
         return $this->callApi($url);
     }
 
-    public function searchTracks($query, $limit = 10)
+    public function searchTracks($query, $limit = 12)
     {
         $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
-            '&format=jsonpretty&limit=' . $limit . '&search=' . urlencode($query) .
-            '&include=musicinfo';
+            '&format=jsonpretty&limit=' . $limit .
+            '&search=' . urlencode($query) .
+            '&include=musicinfo&audiodl=1'; // Ensure audio download links
 
         $result = $this->callApi($url);
 
-        // Additional filtering if needed
+        // Filter out tracks without audio
         if (isset($result['results'])) {
             $result['results'] = array_filter($result['results'], function ($track) {
-                return !empty($track['audio']);
+                return !empty($track['audio']) || !empty($track['audiodownload']);
             });
         }
 

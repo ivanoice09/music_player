@@ -22,34 +22,58 @@ class MusicController extends BaseController
 
     public function search()
     {
+        // Initialize default data
+        $data = [
+            'query' => '',
+            'results' => [],
+            'search_performed' => false,
+            'filters' => [
+                'genre' => '',
+                'duration_min' => '',
+                'duration_max' => '',
+                'order' => 'popularity_total'
+            ],
+            'current_page' => 1,
+            'total_pages' => 1,
+            'suggestions' => []
+        ];
+
+        // Handle POST request
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize search query
-            $query = trim(htmlspecialchars($_POST['query']));
+            // Sanitize inputs
+            $query = trim(htmlspecialchars($_POST['query'] ?? ''));
+            $page = intval($_POST['page'] ?? 1);
+            $filters = [
+                'genre' => $_POST['genre'] ?? '',
+                'duration_min' => intval($_POST['duration_min'] ?? 0),
+                'duration_max' => intval($_POST['duration_max'] ?? 0),
+                'order' => in_array($_POST['order'] ?? '', ['popularity_total', 'releasedate'])
+                    ? $_POST['order'] : 'popularity_total'
+            ];
 
             if (!empty($query)) {
-                // Get search results from Jamendo API
-                $results = $this->musicModel->searchTracks($query, 20);
+                // Get search results with pagination (20 items per page)
+                $results = $this->musicModel->searchTracks($query, 20, $page, $filters);
 
+                // Prepare data for view
                 $data = [
                     'query' => $query,
                     'results' => $results['results'] ?? [],
-                    'search_performed' => true
+                    'search_performed' => true,
+                    'filters' => $filters,
+                    'current_page' => $page,
+                    'total_pages' => min(10, ceil($results['headers']['results_count'] ?? 0) / 20),
+                    'total_results' => $results['headers']['results_count'] ?? 0
                 ];
-
-                $this->view('music/search', $data);
-            } else {
-                // If search query is empty, redirect to browse
-                redirect('music/browse');
             }
-        } else {
-            // If not POST request, show empty search page
-            $data = [
-                'query' => '',
-                'results' => [],
-                'search_performed' => false
-            ];
-            $this->view('music/search', $data);
         }
+
+        // Get search suggestions for empty search
+        if (empty($data['query'])) {
+            $data['suggestions'] = $this->musicModel->getSearchSuggestions();
+        }
+
+        $this->view('music/search', $data);
     }
 
     public function getSuggestions()
@@ -76,17 +100,29 @@ class MusicController extends BaseController
 
     public function instantSearch()
     {
-        // Only allow AJAX requests
-        if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+        // Verify AJAX request
+        if (
+            empty($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'
+        ) {
             http_response_code(403);
             exit(json_encode(['error' => 'Direct access forbidden']));
         }
 
         $query = $_GET['q'] ?? '';
-        $limit = 12; // Number of results to show
+        $limit = 12;
 
         try {
             $results = $this->musicModel->searchTracks($query, $limit);
+
+            // Ensure we have valid audio URLs
+            if (isset($results['results'])) {
+                foreach ($results['results'] as &$track) {
+                    if (empty($track['audio']) && !empty($track['audiodownload'])) {
+                        $track['audio'] = $track['audiodownload'];
+                    }
+                }
+            }
 
             header('Content-Type: application/json');
             echo json_encode([
@@ -98,7 +134,7 @@ class MusicController extends BaseController
             header('HTTP/1.1 500 Internal Server Error');
             echo json_encode([
                 'success' => false,
-                'error' => 'Search failed'
+                'error' => 'Search failed: ' . $e->getMessage()
             ]);
             exit();
         }
