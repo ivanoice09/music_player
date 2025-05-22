@@ -1,13 +1,13 @@
 <?php require_once APP_ROOT . '/app/views/layouts/header.php'; ?>
 
 <div class="container">
-    <h1 class="my-4">Welcome to <?php echo SITE_NAME; ?></h1>
+    <h1 class="my-5">Welcome to <?php echo SITE_NAME; ?></h1>
     <h3>Featured Tracks</h3>
     <!-- Song Cards Grid -->
-    <div class="row">
+    <div class="row mt-5">
         <?php if (!empty($data['featuredTracks']['results'])): ?>
             <?php foreach ($data['featuredTracks']['results'] as $track): ?>
-                <div class="col-md-4 mb-4 song-card"
+                <div class="col-md-3 mb-5 song-card"
                     data-audio="<?php echo htmlspecialchars($track['audio'] ?? $track['audiodownload'] ?? ''); ?>"
                     data-artist="<?php echo htmlspecialchars($track['artist_name'] ?? 'Unknown Artist'); ?>"
                     data-title="<?php echo htmlspecialchars($track['name'] ?? 'Unknown Track'); ?>"

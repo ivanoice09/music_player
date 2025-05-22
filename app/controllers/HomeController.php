@@ -8,7 +8,7 @@ class HomeController extends BaseController {
     
     public function index() {
         // Get some featured tracks for the home page
-        $featuredTracks = $this->musicModel->getPopularTracks(6);
+        $featuredTracks = $this->musicModel->getPopularTracks(36);
         
         $data = [
             'featuredTracks' => $featuredTracks

@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <div class="container">
+    <div class="container py-2">
         <a class="navbar-brand" href="<?php echo URL_ROOT; ?>"><?php echo SITE_NAME; ?></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -7,10 +7,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-md-auto">
                 <!-- Search form -->
-                <form action="<?php echo URL_ROOT; ?>/music/search" method="post">
+                <form action="<?php echo URL_ROOT; ?>/music/search" method="post" style="width: 400px;">
                     <div class="input-group">
                         <input type="text" name="query" class="form-control"
-                            placeholder="Search for music..."
+                            placeholder="Search for songs..."
                             value="<?php echo !empty($data['query']) ? $data['query'] : ''; ?>">
                     </div>
                 </form>
