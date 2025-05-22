@@ -1,30 +1,30 @@
-<?php include APP_ROOT . '/app/views/layouts/header.php'; ?>
+<?php require_once APP_ROOT . '/app/views/layouts/header.php'; ?>
 
 <div class="container">
     <h1 class="my-4">Welcome to <?php echo SITE_NAME; ?></h1>
-    
-    <?php if(!empty($data['featuredTracks'])): ?>
-        <h3>Featured Tracks</h3>
-        <div class="row">
-            <?php foreach($data['featuredTracks'] as $track): ?>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="<?php echo $track['image']; ?>" class="card-img-top" alt="<?php echo $track['name']; ?>">
+    <h3>Featured Tracks</h3>
+    <!-- Song Cards Grid -->
+    <div class="row">
+        <?php if (!empty($data['featuredTracks']['results'])): ?>
+            <?php foreach ($data['featuredTracks']['results'] as $track): ?>
+                <div class="col-md-4 mb-4 song-card"
+                    data-audio="<?php echo htmlspecialchars($track['audio'] ?? $track['audiodownload'] ?? ''); ?>"
+                    data-artist="<?php echo htmlspecialchars($track['artist_name'] ?? 'Unknown Artist'); ?>"
+                    data-title="<?php echo htmlspecialchars($track['name'] ?? 'Unknown Track'); ?>"
+                    data-image="<?php echo htmlspecialchars($track['image'] ?? ''); ?>">
+                    <div class="card">
+                        <img src="<?php echo htmlspecialchars($track['image'] ?? 'placeholder.jpg'); ?>" class="card-img-top" alt="Album Art">
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo $track['name']; ?></h5>
-                            <p class="card-text">Artist: <?php echo $track['artist_name']; ?></p>
-                            <audio controls class="w-100">
-                                <source src="<?php echo $track['audio']; ?>" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
+                            <h5 class="card-title"><?php echo htmlspecialchars($track['name'] ?? 'Unknown Track'); ?></h5>
+                            <p class="card-text"><?php echo htmlspecialchars($track['artist_name'] ?? 'Unknown Artist'); ?></p>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <div class="alert alert-warning">No featured tracks found</div>
-    <?php endif; ?>
+        <?php else: ?>
+            <p>No tracks found.</p>
+        <?php endif; ?>
+    </div>
 </div>
 
-<?php include APP_ROOT . '/app/views/layouts/footer.php'; ?>
+<?php require_once APP_ROOT . '/app/views/layouts/footer.php'; ?>

@@ -13,6 +13,6 @@
 </head>
 
 <body>
+    <?php require_once APP_ROOT . '/app/views/partials/navbar.php'; ?>
     <div>
-        <?php require_once APP_ROOT . '/app/views/partials/navbar.php'; ?>
         <?php flash('register_success'); ?>

@@ -11,13 +11,13 @@ body {
 }
 
 /* Song Cards */
-.song-card {
+.song-card .card {
     cursor: pointer;
     transition: transform 0.2s;
     margin-bottom: 20px;
 }
 
-.song-card:hover {
+.song-card .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }

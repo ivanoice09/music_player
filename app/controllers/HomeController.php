@@ -11,7 +11,7 @@ class HomeController extends BaseController {
         $featuredTracks = $this->musicModel->getPopularTracks(6);
         
         $data = [
-            'featuredTracks' => $featuredTracks['results'] ?? []
+            'featuredTracks' => $featuredTracks
         ];
         
         $this->view('home/index', $data);

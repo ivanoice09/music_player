@@ -37,6 +37,10 @@ $routes = [
         'controller' => 'MusicController',
         'action' => 'instantSearch',
         'ajax_only' => true
+    ],
+    'debbug' => [
+        'controller' => 'HomeController',
+        'action' => 'index'
     ]
 ];
 

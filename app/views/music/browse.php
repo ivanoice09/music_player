@@ -15,10 +15,11 @@
                                 Artist: <?php echo $track['artist_name']; ?><br>
                                 Duration: <?php echo gmdate("i:s", $track['duration']); ?>
                             </p>
-                            <audio controls class="w-100">
+                            <!-- REMOVE NAV BAR -->
+                            <!-- <audio controls class="w-100">
                                 <source src="<?php echo $track['audio']; ?>" type="audio/mpeg">
                                 Your browser does not support the audio element.
-                            </audio>
+                            </audio> -->
                         </div>
                     </div>
                 </div>

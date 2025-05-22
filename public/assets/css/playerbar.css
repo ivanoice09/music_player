@@ -1,41 +1,19 @@
-/* Global Player Styles */
-#globalPlayer {
-    border-top: 1px solid #444;
+.player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
 }
 
-#globalPlayer .progress {
-    height: 5px;
+.song-card {
     cursor: pointer;
+    transition: transform 0.2s;
 }
 
-#globalPlayer .progress-bar {
-    background-color: #1db954;
-    /* Spotify green */
-    transition: width 0.1s linear;
-}
-
-#globalPlayer .btn-link {
-    font-size: 1.2rem;
-}
-
-#globalPlayer .btn-link:hover {
-    color: #1db954 !important;
-}
-
-/* Volume control */
-#volumeControl {
-    width: 100px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #globalPlayer .col-md-3:last-child {
-        display: none;
-    }
-
-    #globalPlayer .col-md-6 {
-        padding: 0 10px;
-    }
+.song-card:hover {
+    transform: scale(1.03);
 }
