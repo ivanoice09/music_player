@@ -14,5 +14,3 @@
 
 <body>
     <?php require_once APP_ROOT . '/app/views/partials/navbar.php'; ?>
-    <div>
-        <?php flash('register_success'); ?>
