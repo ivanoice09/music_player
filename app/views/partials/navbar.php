@@ -5,11 +5,6 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-md-auto">
-                <li class="nav-item">
-                    <a href="<?php echo URL_ROOT; ?>/music/browse" class="nav-link">Browse</a>
-                </li>
-            </ul>
             <ul class="navbar-nav mx-md-auto">
                 <!-- Search form -->
                 <form action="<?php echo URL_ROOT; ?>/music/search" method="post">

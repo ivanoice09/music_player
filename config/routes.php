@@ -21,10 +21,6 @@ $routes = [
         'controller' => 'AuthController',
         'action' => 'logout'
     ],
-    'music/browse' => [
-        'controller' => 'MusicController',
-        'action' => 'browse'
-    ],
     'music/search' => [
         'controller' => 'MusicController',
         'action' => 'search'
@@ -44,14 +40,12 @@ $routes = [
     ]
 ];
 
-
 // Helper functions
 function redirect($page)
 {
     header('location: ' . URL_ROOT . '/' . $page);
     exit();
 }
-
 
 function flash($name = '', $message = '', $class = 'alert alert-success')
 {

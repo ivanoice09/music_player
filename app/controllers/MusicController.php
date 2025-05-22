@@ -8,18 +8,6 @@ class MusicController extends BaseController
         $this->musicModel = new Music();
     }
 
-    public function browse()
-    {
-        // Get popular tracks
-        $tracks = $this->musicModel->getPopularTracks(20);
-
-        $data = [
-            'tracks' => $tracks['results'] ?? []
-        ];
-
-        $this->view('music/browse', $data);
-    }
-
     public function search()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
