@@ -7,13 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-md-auto">
                 <!-- Search form -->
-                <form action="<?php echo URL_ROOT; ?>/music/search" method="post" style="width: 400px;">
-                    <div class="input-group">
-                        <input type="text" name="query" class="form-control"
-                            placeholder="Search for songs..."
-                            value="<?php echo !empty($data['query']) ? $data['query'] : ''; ?>">
-                    </div>
-                </form>
+                <?php include APP_ROOT . '/app/views/partials/searchBar.php'; ?>
             </ul>
             <ul class="navbar-nav ml-md-auto">
                 <?php if (isLoggedIn()): ?>
