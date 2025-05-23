@@ -9,11 +9,16 @@
     z-index: 1000;
 }
 
-.song-card {
-    cursor: pointer;
-    transition: transform 0.2s;
+/* Audio Player Customization */
+#audioPlayer {
+    height: 40px;
 }
 
-.song-card:hover {
-    transform: scale(1.03);
+#audioPlayer::-webkit-media-controls-panel {
+    background-color: #BBB6DF;
+}
+
+#audioPlayer::-webkit-media-controls-play-button,
+#audioPlayer::-webkit-media-controls-mute-button {
+    filter: invert(1);
 }
