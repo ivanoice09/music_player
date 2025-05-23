@@ -2,13 +2,6 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Player Bar */
-#playerBar {
-    border-top: 1px solid #333;
-    z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-}
-
 /* Song Cards */
 .song-card .card {
     cursor: pointer;
