@@ -1,10 +1,9 @@
 <?php require_once APP_ROOT . '/app/views/layouts/header.php'; ?>
 
 <div class="container">
-    <h1 class="my-5">Welcome to <?php echo SITE_NAME; ?></h1>
-    <h3>Featured Tracks</h3>
+    <p class="h3 my-5"><strong>Featured tracks</strong></p>
     <!-- Song Cards Grid -->
-    <div class="row mt-5">
+    <div class="row">
         <?php if (!empty($data['featuredTracks']['results'])): ?>
             <?php foreach ($data['featuredTracks']['results'] as $track): ?>
                 <div class="col-md-3 mb-5 song-card"
