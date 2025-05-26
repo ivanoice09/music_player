@@ -56,19 +56,4 @@ class Music
 
         return $result;
     }
-
-    public function getSearchSuggestions()
-    {
-        $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
-            '&format=jsonpretty&limit=5&order=popularity_total';
-
-        $result = $this->callApi($url);
-
-        return array_map(function ($track) {
-            return [
-                'name' => $track['name'],
-                'artist' => $track['artist_name']
-            ];
-        }, $result['results'] ?? []);
-    }
 }

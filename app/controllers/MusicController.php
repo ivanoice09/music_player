@@ -40,67 +40,48 @@ class MusicController extends BaseController
         }
     }
 
-    public function getSuggestions()
+    // new function: autoSearch() when I search the results show immediately
+    public function searchResults()
     {
-        $query = $_GET['q'] ?? '';
-        if (!empty($query)) {
-            $results = $this->musicModel->searchTracks($query, 5);
-            $suggestions = array_map(function ($track) {
-                return [
-                    'name' => $track['name'],
-                    'artist' => $track['artist_name']
-                ];
-            }, $results['results'] ?? []);
+        if (isset($_GET['q']) && !empty($_GET['q'])) {
+            $query = $_GET['q'];
+            $sanitizedQuery = trim(htmlspecialchars($query));
 
-            header('Content-Type: application/json');
-            echo json_encode($suggestions);
-            exit();
-        }
+            // Get results from API
+            $apiResults = $this->musicModel->searchTracks($sanitizedQuery, 20);
 
-        header('Content-Type: application/json');
-        echo json_encode([]);
-        exit();
-    }
-
-    public function instantSearch()
-    {
-        // Verify AJAX request
-        if (
-            empty($_SERVER['HTTP_X_REQUESTED_WITH']) ||
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'
-        ) {
-            http_response_code(403);
-            exit(json_encode(['error' => 'Direct access forbidden']));
-        }
-
-        $query = $_GET['q'] ?? '';
-        $limit = 12;
-
-        try {
-            $results = $this->musicModel->searchTracks($query, $limit);
-
-            // Ensure we have valid audio URLs
-            if (isset($results['results'])) {
-                foreach ($results['results'] as &$track) {
-                    if (empty($track['audio']) && !empty($track['audiodownload'])) {
-                        $track['audio'] = $track['audiodownload'];
-                    }
+            // Transform the data to match what your JavaScript expects
+            $transformedResults = [];
+            if (isset($apiResults['results'])) {
+                foreach ($apiResults['results'] as $track) {
+                    $transformedResults[] = [
+                        'audio' => $track['audio'] ?? $track['audiodownload'] ?? '',
+                        'name' => $track['name'] ?? 'Unknown Track',
+                        'artist_name' => $track['artist_name'] ?? 'Unknown Artist',
+                        'image' => $track['image'] ?? 'default-image.jpg'
+                    ];
                 }
             }
 
+            // Set proper JSON header
             header('Content-Type: application/json');
-            echo json_encode([
-                'success' => true,
-                'results' => $results['results'] ?? []
-            ]);
-            exit();
-        } catch (Exception $e) {
-            header('HTTP/1.1 500 Internal Server Error');
-            echo json_encode([
-                'success' => false,
-                'error' => 'Search failed: ' . $e->getMessage()
-            ]);
-            exit();
+            echo json_encode($transformedResults);
+            exit;
         }
+    }
+
+    // Show results in search.php
+    public function searchView()
+    {
+        // Get search query if it exists
+        $query = $_GET['q'] ?? '';
+
+        // Prepare data for the view
+        $data = [
+            'query' => htmlspecialchars($query),
+            'search_performed' => !empty($query)
+        ];
+
+        $this->view('music/search', $data);
     }
 }

@@ -16,5 +16,4 @@ class HomeController extends BaseController {
         
         $this->view('home/index', $data);
     }
-
 }

@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo SITE_NAME; ?></title>
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <!-- FONT-AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/main.css">
+    <!-- HOME PAGE MAIN STYLE -->
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/index.css">
+    <!-- PLAYERBAR 2.O CUSTOM STYLE -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playerbar2.0.css">
 </head>
 

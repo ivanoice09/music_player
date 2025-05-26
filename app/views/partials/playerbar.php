@@ -1,4 +1,4 @@
-<!-- Player Bar -->
+<!-- Player Bar
 <div class="player-bar" id="playerBar">
     <div class="container">
         <div class="row align-items-center">
@@ -32,10 +32,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Full Player View (hidden by default) -->
-<div class="full-player" id="fullPlayer">
+<!-- <div class="full-player" id="fullPlayer">
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 text-center">
@@ -69,4 +69,30 @@
             </div>
         </div>
     </div>
+</div> -->
+
+<!-- Player Bar (hidden by default) - SPA VERSION -->
+<div class="player-bar fixed-bottom" id="playerBar">
+    <div class="container-fluid bg-dark text-white p-3">
+        <div class="row align-items-center">
+            <div class="col-md-3">
+                <div class="d-flex align-items-center">
+                    <img id="nowPlayingArt" src="" alt="Album Art" class="img-thumbnail me-3" style="width: 60px; height: 60px;">
+                    <div>
+                        <h6 id="nowPlayingTitle" class="mb-0">No song selected</h6>
+                        <small id="nowPlayingArtist" class="text-muted">Unknown artist</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <audio id="audioPlayer" controls></audio>
+            </div>
+            <div class="col-md-3 text-end">
+                <button class="btn btn-sm btn-outline-light" id="volumeControl">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

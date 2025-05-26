@@ -1,8 +1,8 @@
 <?php require_once APP_ROOT . '/app/views/layouts/header.php'; ?>
 
-<div class="container">
+<!-- <div class="container">
     <h1 class="my-4">Search Results</h1>
-    <!-- Search Results -->
+   
     <?php if ($data['search_performed']): ?>
         <?php if (!empty($data['results'])): ?>
             <div class="row">
@@ -32,6 +32,17 @@
             Enter a search term to find music
         </div>
     <?php endif; ?>
+</div> -->
+
+<div class="container">
+    <!-- Results container -->
+    <div class="row mt-3" id="searchResults">
+        <?php if (!$data['search_performed']): ?>
+            <div class="col-12 text-center text-muted">
+                Type in the search bar to find music
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php require_once APP_ROOT . '/app/views/layouts/footer.php'; ?>

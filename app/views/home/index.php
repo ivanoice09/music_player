@@ -2,7 +2,6 @@
 
 <div class="container">
     <p class="h3 my-5"><strong>Featured tracks</strong></p>
-    <!-- Song Cards Grid -->
     <div class="row">
         <?php if (!empty($data['featuredTracks']['results'])): ?>
             <?php foreach ($data['featuredTracks']['results'] as $track): ?>

@@ -21,18 +21,13 @@ $routes = [
         'controller' => 'AuthController',
         'action' => 'logout'
     ],
-    'music/search' => [
+    'search' => [
         'controller' => 'MusicController',
-        'action' => 'search'
+        'action' => 'searchView'
     ],
-    'music/getSuggestions' => [
+    'music/searchResults' => [
         'controller' => 'MusicController',
-        'action' => 'getSuggestions'
-    ],
-    'music/instantSearch' => [
-        'controller' => 'MusicController',
-        'action' => 'instantSearch',
-        'ajax_only' => true
+        'action' => 'searchResults'
     ],
     'debbug' => [
         'controller' => 'HomeController',
