@@ -7,16 +7,16 @@ $(document).ready(function () {
     playerBar.hide();
 
     // Search on button click
-    // $('#searchButton').click(function() {
-    //     performSearch();
-    // });
+    $('#searchButton').click(function() {
+        performSearch();
+    });
 
     // Search on Enter key
-    // $('#searchInput').keypress(function(e) {
-    //     if (e.which === 13) {
-    //         performSearch();
-    //     }
-    // });
+    $('#searchInput').keypress(function(e) {
+        if (e.which === 13) {
+            performSearch();
+        }
+    });
 
     // Auto-search with debounce (500ms delay)
     $('#searchInput').keyup(function () {
@@ -86,25 +86,6 @@ $(document).ready(function () {
             });
             $('#searchResults').html(html);
 
-            // Add click event to song cards
-            $('.song-card').click(function () {
-                const audioUrl = $(this).data('audio');
-                const title = $(this).data('title');
-                const artist = $(this).data('artist');
-                const artwork = $(this).data('artwork');
-
-                // Update player bar
-                $('#nowPlayingTitle').text(title);
-                $('#nowPlayingArtist').text(artist);
-                $('#nowPlayingArt').attr('src', artwork);
-
-                // Set audio source and play
-                audioPlayer.src = audioUrl;
-                audioPlayer.play();
-
-                // Show player bar
-                playerBar.show();
-            });
         } else {
             $('#searchResults').html('<div class="col-12 text-center text-muted">No results found</div>');
         }

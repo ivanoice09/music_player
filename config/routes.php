@@ -9,6 +9,10 @@ $routes = [
         'controller' => 'HomeController',
         'action' => 'index'
     ],
+    'main' => [
+        'controller' => 'HomeController',
+        'action'=> 'main'
+    ],
     'auth/register' => [
         'controller' => 'AuthController',
         'action' => 'register'

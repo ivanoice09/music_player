@@ -1,4 +1,4 @@
-<!-- Player Bar
+<!-- PLAYERBAR 2.0 -->
 <div class="player-bar" id="playerBar">
     <div class="container">
         <div class="row align-items-center">
@@ -32,10 +32,10 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- Full Player View (hidden by default) -->
-<!-- <div class="full-player" id="fullPlayer">
+<div class="full-player" id="fullPlayer">
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 text-center">
@@ -69,10 +69,10 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
-<!-- Player Bar (hidden by default) - SPA VERSION -->
-<div class="player-bar fixed-bottom" id="playerBar">
+<!-- PLAYERBAR 2.1 (hidden by default) - SPA VERSION -->
+<!-- <div class="player-bar fixed-bottom" id="playerBar">
     <div class="container-fluid bg-dark text-white p-3">
         <div class="row align-items-center">
             <div class="col-md-3">
@@ -95,4 +95,4 @@
         </div>
     </div>
 </div>
-</div>
+</div> -->
