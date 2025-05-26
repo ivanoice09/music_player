@@ -1,6 +1,7 @@
 class SPARouter {
     constructor() {
         this.audioPlayer = document.getElementById('audioPlayer') || this.createAudioPlayer();
+        this.baseUrl = URL_ROOT.replace(window.location.origin, '');
         this.init();
     }
 
@@ -21,16 +22,34 @@ class SPARouter {
         // Handle internal navigation
         $(document).on('click', 'a[href^="/"], a[href^="' + window.location.origin + '"]', (e) => {
             const link = e.currentTarget;
-            if (!link.hasAttribute('data-spa-ignore')) {
+            if (!link.hasAttribute('data-spa-ignore') && 
+                !link.href.includes('#') && 
+                !link.classList.contains('no-spa')) {
                 e.preventDefault();
                 this.navigate(link.href);
             }
         });
 
         // Handle browser navigation
-        window.addEventListener('popstate', () => {
-            this.loadContent(window.location.pathname);
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.spa) {
+                this.loadContent(window.location.pathname);
+            }
         });
+    }
+
+    
+
+    normalizeUrl(url) {
+        // Remove base URL if present
+        let normalized = url.replace(window.location.origin, '');
+        // Ensure it starts with /
+        if (!normalized.startsWith('/')) {
+            normalized = '/' + normalized;
+        }
+        // Remove public if present
+        normalized = normalized.replace(/^\/public/, '');
+        return normalized;
     }
 
     patchExistingFunctions() {
@@ -45,14 +64,21 @@ class SPARouter {
     }
 
     async navigate(url) {
-        history.pushState({}, '', url);
-        await this.loadContent(url);
+        // Normalize URL
+        const normalizedUrl = this.normalizeUrl(url);
+        history.pushState({ spa: true }, '', normalizedUrl);
+        await this.loadContent(normalizedUrl);
     }
-
+    
     async loadContent(url) {
         try {
-            // Show loading indicator if needed
+            // Show loading indicator
             $('body').addClass('loading');
+
+            // Handle home route specially
+            if (url === '/' || url === '/home' || url === '') {
+                url = '/main';
+            }
 
             const response = await fetch(url, {
                 headers: {
@@ -63,39 +89,46 @@ class SPARouter {
 
             if (!response.ok) throw new Error('Network response was not ok');
 
+            const contentType = response.headers.get('content-type');
+            if (contentType.includes('application/json')) {
+                return await response.json();
+            }
+
             const html = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            // Handle different response types
-            if (url.includes('searchResults')) {
-                // This is an API response, handle it differently
-                return JSON.parse(html);
-            } else {
-                // This is HTML content
-                const newContent = $(doc).find('#app-content').html() || html;
-
-                // Preserve player state
-                const currentTime = this.audioPlayer.currentTime;
-                const isPlaying = !this.audioPlayer.paused;
-                const currentSrc = this.audioPlayer.src;
-
-                // Update content
-                $('#app-content').html(newContent);
-                document.title = doc.title;
-
-                // Restore player state
-                if (currentSrc) {
-                    this.audioPlayer.src = currentSrc;
-                    this.audioPlayer.currentTime = currentTime;
-                    if (isPlaying) {
-                        this.audioPlayer.play().catch(e => console.log('Autoplay prevented:', e));
-                    }
+            // Get content from #app-content or use full response
+            let newContent = $(doc).find('#app-content').html() || html;
+            
+            // Special handling for home page
+            if (url === '/main') {
+                const homeContent = $(doc).find('.container').html();
+                if (homeContent) {
+                    newContent = `<div class="container">${homeContent}</div>`;
                 }
-
-                // Reinitialize components
-                this.reinitializeComponents();
             }
+
+            // Preserve player state
+            const currentTime = this.audioPlayer.currentTime;
+            const isPlaying = !this.audioPlayer.paused;
+            const currentSrc = this.audioPlayer.src;
+
+            // Update content
+            $('#app-content').html(newContent);
+            document.title = doc.title || 'Musyk';
+
+            // Restore player state
+            if (currentSrc) {
+                this.audioPlayer.src = currentSrc;
+                this.audioPlayer.currentTime = currentTime;
+                if (isPlaying) {
+                    this.audioPlayer.play().catch(e => console.log('Autoplay prevented:', e));
+                }
+            }
+
+            // Reinitialize components
+            this.reinitializeComponents();
 
         } catch (error) {
             console.error('Failed to load content:', error);
