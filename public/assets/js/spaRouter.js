@@ -38,8 +38,6 @@ class SPARouter {
         });
     }
 
-    
-
     normalizeUrl(url) {
         // Remove base URL if present
         let normalized = url.replace(window.location.origin, '');
