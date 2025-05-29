@@ -14,7 +14,6 @@
     <!-- playerbar -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playerbar.css">
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/songCards.css">
-
 </head>
 
 <body>

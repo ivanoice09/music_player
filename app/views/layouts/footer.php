@@ -7,8 +7,6 @@
     <script src="<?php echo URL_ROOT; ?>/assets/js/playerbar.js"></script>
     <!-- AUTOSEARCH V1 JQUERY -->
     <script src="<?php echo URL_ROOT; ?>/assets/js/autosearch.js"></script>
-    <!-- SPA ROUTER -->
-    <!-- <script src="<?php echo URL_ROOT; ?>/assets/js/spaRouter.js"></script> -->
 </footer>
 </body>
 
