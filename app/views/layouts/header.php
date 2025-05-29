@@ -11,8 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- HOME PAGE MAIN STYLE -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/index.css">
-    <!-- playerbar and song-card style -->
+    <!-- playerbar -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playerbar.css">
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/songCards.css">
 
 </head>
 

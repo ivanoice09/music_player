@@ -11,7 +11,7 @@
 <script src="<?php echo URL_ROOT; ?>/assets/js/autosearch.js"></script>
 
 <!-- SPA ROUTER -->
-<script src="<?php echo URL_ROOT; ?>/assets/js/spaRouter.js"></script>
+<!-- <script src="<?php echo URL_ROOT; ?>/assets/js/spaRouter.js"></script> -->
 
 </body>
 

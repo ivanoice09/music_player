@@ -6,18 +6,6 @@ $(document).ready(function () {
     // Initialize - hide player bar
     playerBar.hide();
 
-    // Search on button click
-    $('#searchButton').click(function() {
-        performSearch();
-    });
-
-    // Search on Enter key
-    $('#searchInput').keypress(function(e) {
-        if (e.which === 13) {
-            performSearch();
-        }
-    });
-
     // Auto-search with debounce (500ms delay)
     $('#searchInput').keyup(function () {
         const query = $(this).val().trim();

@@ -2,23 +2,6 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Song Cards */
-.song-card .card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    margin-bottom: 20px;
-}
-
-.song-card .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.song-card .card-img-top {
-    height: 160px;
-    object-fit: cover;
-}
-
 /* Flash messages */
 #msg-flash {
     position: fixed;
