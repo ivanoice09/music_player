@@ -1,11 +1,6 @@
-<div id="app-content">
-    <?php
-    // Content will be loaded here dynamically
-    if (!empty($content)) {
-        echo $content;
-    } else {
-        // Default content when accessed directly
-        require_once APP_ROOT . '/app/views/home/index.php';
-    }
-    ?>
-</div>
+<?php require_once APP_ROOT . '/app/views/layouts/header.php';?>
+<main id="main-content">
+    <!-- This will be replaced dynamically -->
+    <?php include $contentView; ?>
+</main>
+<?php require_once APP_ROOT . '/app/views/layouts/footer.php';?>
