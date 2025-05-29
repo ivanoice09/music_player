@@ -20,19 +20,4 @@ class HomeController extends BaseController
         $this->view('home/index', $data);
     }
 
-    public function main()
-    {
-        if ($this->isAjaxRequest()) {
-            // For AJAX requests, return just the content
-            $featuredTracks = $this->musicModel->getPopularTracks(36);
-            $data = [
-                'featuredTracks' => $featuredTracks,
-                'content' => '' // This will be filled by the view
-            ];
-            $this->view('home/index', $data);
-        } else {
-            // For full page loads
-            $this->index();
-        }
-    }
 }
