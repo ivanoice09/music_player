@@ -1,4 +1,4 @@
-<!-- PLAYERBAR 2.0 -->
+<!-- PLAYERBAR (HIDDEN BY DEFAULT) -->
 <div class="player-bar" id="playerBar">
     <div class="container">
         <div class="row align-items-center">
@@ -70,29 +70,3 @@
         </div>
     </div>
 </div>
-
-<!-- PLAYERBAR 2.1 (hidden by default) - SPA VERSION -->
-<!-- <div class="player-bar fixed-bottom" id="playerBar">
-    <div class="container-fluid bg-dark text-white p-3">
-        <div class="row align-items-center">
-            <div class="col-md-3">
-                <div class="d-flex align-items-center">
-                    <img id="nowPlayingArt" src="" alt="Album Art" class="img-thumbnail me-3" style="width: 60px; height: 60px;">
-                    <div>
-                        <h6 id="nowPlayingTitle" class="mb-0">No song selected</h6>
-                        <small id="nowPlayingArtist" class="text-muted">Unknown artist</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 text-center">
-                <audio id="audioPlayer" controls></audio>
-            </div>
-            <div class="col-md-3 text-end">
-                <button class="btn btn-sm btn-outline-light" id="volumeControl">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-</div> -->

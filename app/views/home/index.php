@@ -1,3 +1,4 @@
+<!-- HOMEPAGE -->
 <div class="container">
     <p class="h3 my-5"><strong>Featured tracks</strong></p>
     <div class="row">

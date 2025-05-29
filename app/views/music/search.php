@@ -1,3 +1,4 @@
+<!-- SEARCH RESULT VIEW -->
 <div class="container">
     <div class="row mt-3" id="searchResults">
         <?php if (!$data['search_performed']): ?>
