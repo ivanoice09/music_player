@@ -8,14 +8,12 @@ error_reporting(E_ALL);
 define('ROOT', dirname(__DIR__));
 define('DS', DIRECTORY_SEPARATOR);
 
-// Load configuration
-require_once ROOT . '/config/config.php';
-
-// Load routes
-require_once ROOT . '/config/routes.php';
-
 // Load BaseController first (since other controllers extend it)
 require_once ROOT . '/app/controllers/BaseController.php';
+// Load configuration
+require_once ROOT . '/config/config.php';
+// Load routes
+require_once ROOT . '/config/routes.php';
 
 // Simple autoloader
 /**
@@ -44,7 +42,7 @@ spl_autoload_register(function ($className) {
 });
 
 // Parse URL
-$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'home';
+$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'main';
 $url = filter_var($url, FILTER_SANITIZE_URL);
 
 // Debugging output

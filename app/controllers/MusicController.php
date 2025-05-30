@@ -9,7 +9,7 @@ class MusicController extends BaseController
     }
 
     // Gets the songs that have been queried
-    public function searchResults()
+    public function getSearchedSongs()
     {
         if (isset($_GET['q']) && !empty($_GET['q'])) {
             $query = $_GET['q'];
@@ -38,9 +38,7 @@ class MusicController extends BaseController
         }
     }
 
-    //  Just for testing purposes: 
-    // I want Js to render the display of the songs so whenever I change things
-    // it happens on the spot, all of this happens on this function
+    // Gets popular songs for home page
     public function getPopularSongs()
     {
         // Get results from API
@@ -65,8 +63,7 @@ class MusicController extends BaseController
         exit;
     }
 
-    // Show results in search.php
-    public function searchView()
+    public function loadView()
     {
         // Get search query if it exists
         $query = $_GET['q'] ?? '';
@@ -77,6 +74,6 @@ class MusicController extends BaseController
             'search_performed' => !empty($query)
         ];
 
-        $this->view('music/search', $data);
+        $this->view('layouts/main', $data);
     }
 }

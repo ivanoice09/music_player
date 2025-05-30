@@ -2,16 +2,6 @@
 // Define routes
 $routes = [
 
-    // HOME ROUTES
-    '' => [
-        'controller' => 'HomeController',
-        'action' => 'index'
-    ],
-    'home' => [
-        'controller' => 'HomeController',
-        'action' => 'index'
-    ],
-
     // AUTH 
     'auth/register' => [
         'controller' => 'AuthController',
@@ -26,17 +16,16 @@ $routes = [
         'action' => 'logout'
     ],
 
-    // SEARCH SONGS
+    // MAIN PAGES ROUTES
+    'main' => [
+        'controller' => 'MusicController',
+        'action' => 'loadView'
+    ],
     'search' => [ // THIS CUSTOM ROUTE BRINGS THE RESULTS TO search.php CONTAINER
         'controller' => 'MusicController',
-        'action' => 'searchView'
+        'action' => 'getSearchedSongs'
     ],
-    'music/searchResults' => [
-        'controller' => 'MusicController',
-        'action' => 'searchResults'
-    ],
-    // For popular songs, THIS IS A TEST!!!
-    'music/popularSongs' => [
+    'popular' => [
         'controller' => 'MusicController',
         'action' => 'getPopularSongs'
     ],

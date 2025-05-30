@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container py-auto">
-        <a class="navbar-brand" href="#popular" id="popularSongsLink"><?php echo SITE_NAME; ?></a>
+        <a class="navbar-brand" href="<?php echo URL_ROOT; ?>/" id="homeLink"><?php echo SITE_NAME; ?></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>

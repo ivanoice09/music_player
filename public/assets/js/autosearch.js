@@ -1,90 +1,78 @@
 $(document).ready(function () {
     const playerBar = $('#playerBar');
+    const mainContainer = $('#mainView'); // Consistent container reference
     let debounceTimer;
 
     // Initialize - hide player bar
     playerBar.hide();
+    loadInitialView(); // Renamed from checkInitialView for clarity
 
     // Handle popular songs anchor click
-    $('#popularSongsLink').click(function(e) {
+    $('#homeLink').click(function (e) {
         e.preventDefault(); // Prevent default anchor behavior
-        fetchPopularSongs();
+        showPopularSongs(); // New consolidated function
     });
 
     // Auto-search with debounce (500ms delay)
     $('#searchInput').keyup(function () {
         const query = $(this).val().trim();
+        clearTimeout(debounceTimer);
 
-        if (query.length > 0) {
-            // Change URL and load search page
-            loadSearchPage(query);
-
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function () {
-                performSearch(query);
+        if (query.length >= 2) {
+            debounceTimer = setTimeout(() => {
+                loadSearchView(query);
             }, 500);
+        } else if (query.length === 0) {
+            // Return to popular view when search is cleared
+            showPopularSongs();
         }
     });
 
-    function loadSearchPage(query) {
-        // Passing the URL and the query into variable searchUrl
-        const searchUrl = `${URL_ROOT}/search?q=${encodeURIComponent(query)}`;
+    // Consolidated function for popular songs
+    function showPopularSongs() {
+        mainContainer.html('<div class="col-12 text-center">Loading popular songs...</div>');
+        window.history.pushState({ view: 'popular' }, '', `${URL_ROOT}/`);
 
-        // Only navigate if we're not already on the search page
-        if (!window.location.pathname.includes('/search')) {
-            window.location.href = searchUrl;
-        } else {
-            // If already on search page, just update URL without reload
-            window.history.pushState({}, '', searchUrl);
-        }
+        fetchPopularSongs();
+    }
+
+    // Consolidated function for search
+    function loadSearchView(query) {
+        mainContainer.html('<div class="col-12 text-center">Searching...</div>');
+        window.history.pushState({ view: 'search', query }, '', `${URL_ROOT}/search?q=${encodeURIComponent(query)}`);
+
+        performSearch(query);
     }
 
     // New function to fetch popular songs
     function fetchPopularSongs() {
-        $('#searchResults').html('<div class="col-12 text-center">Loading...</div>');
         $.ajax({
-            url: 'music/popularSongs', // This should match your backend route
-            type: 'GET',
-            success: function (data) {
-                console.log('Popular songs response:', data);
-                displayResults(data);
-                // Update URL to reflect we're viewing popular songs
-                window.history.pushState({}, '', `${URL_ROOT}/search#popular`);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                $('#searchResults').html('<div class="col-12 text-center text-muted">Error loading popular songs</div>');
-            }
+            url: 'popular',
+            success: (data) => displayResults(data),
+            error: () => showError('Error loading popular songs')
         });
     }
 
     // Function to perform search
     function performSearch(query) {
-        $('#searchResults').html('<div class="col-12 text-center">Searching...</div>');
         $.ajax({
-            url: 'music/searchResults',
-            type: 'GET',
+            url: 'search',
             data: { q: query },
-            success: function (data) {
-                // See Raw API response
-                console.log('Raw API response:', data);
-                displayResults(data);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                $('#searchResults').html('<div class="col-12 text-center text-muted">Error loading results</div>');
-            }
+            success: (data) => displayResults(data),
+            error: () => showError('Error loading results')
         });
     }
 
     // Function to display search results
     function displayResults(results) {
-        if (results && results.length > 0) {
-            let html = '';
-            results.forEach(song => {
-                html += `
+        if (results?.length > 0) {
+            let html = results.map(song => `
                 <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="song-card card h-100" data-audio="${song.audio}" data-title="${song.name}" data-artist="${song.artist_name}" data-artwork="${song.image}">
+                    <div class="song-card card h-100"
+                        data-audio="${song.audio}" 
+                        data-title="${song.name}" 
+                        data-artist="${song.artist_name}" 
+                        data-artwork="${song.image}">
                         <img src="${song.image}" class="card-img-top" alt="${song.name}">
                         <div class="card-body">
                             <h5 class="card-title">${song.name}</h5>
@@ -92,45 +80,30 @@ $(document).ready(function () {
                         </div>
                     </div>
                 </div>
-                `;
-            });
-            $('#searchResults').html(html);
-
+            `).join('');
+            mainContainer.html(html);
         } else {
-            $('#searchResults').html('<div class="col-12 text-center text-muted">No results found</div>');
+            showError('No results found');
         }
     }
-
-    // popstate event handler
-    // window.addEventListener('popstate', function (event) {
-    //     if (window.location.pathname === '/search') {
-    //         // Load search results based on current URL parameters
-    //         const urlParams = new URLSearchParams(window.location.search);
-    //         const query = urlParams.get('q');
-    //         if (query) performSearch(query);
-    //     }
-    // });
 
     // Check URL on page load for popular songs request
-    function checkInitialView() {
+    function loadInitialView() {
         const urlParams = new URLSearchParams(window.location.search);
-        const hash = window.location.hash;
         
         if (urlParams.has('q')) {
-            const query = urlParams.get('q');
-            if (query) performSearch(query);
-        } 
-        else if (urlParams.has('popular') || hash === '#popular') {
-            fetchPopularSongs();
+            performSearch(urlParams.get('q'));
+        } else {
+            showPopularSongs(); // Always show popular songs by default
         }
     }
 
-    // Run this check when page loads
-    checkInitialView();
-
-    // Update popstate handler
-    window.addEventListener('popstate', function(event) {
-        checkInitialView();
+    window.addEventListener('popstate', (event) => {
+        if (event.state?.view === 'search') {
+            performSearch(event.state.query);
+        } else {
+            showPopularSongs();
+        }
     });
 
 });

@@ -165,7 +165,7 @@ class AuthController extends BaseController
         $_SESSION['user_id'] = $user->id;
         $_SESSION['username'] = $this->sanitizeOutput($user->username);
         $_SESSION['email'] = $this->sanitizeOutput($user->email);
-        redirect('home');
+        redirect('main');
     }
 
     public function logout()
