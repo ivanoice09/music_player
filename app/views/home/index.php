@@ -1,6 +1,6 @@
 <!-- HOMEPAGE -->
 <div class="container">
-    <p class="h3 my-5"><strong>Featured tracks</strong></p>
+    <p class="h3 my-5"><strong>You're at the homepage</strong></p>
     <div class="row">
         <?php foreach ($featuredTracks['results'] as $track): ?>
             <div class="col-md-3 mb-4">
