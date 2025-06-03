@@ -64,7 +64,8 @@ $(document).ready(function () {
                     const audio = $card.data('audio');
                     const artist = $card.data('artist');
                     const title = $card.data('title');
-                    const image = $card.data('image') || $card.data('artwork'); // Handle both data-image and data-artwork
+                    // Prioritize data-image, fall back to data-artwork, then default
+                    const image = $card.data('image') || $card.data('artwork') || 'default-image.jpg';
 
                     // Find this song in the current playlist or create a new one
                     const playlist = $('.song-card').map(function () {
@@ -72,7 +73,7 @@ $(document).ready(function () {
                             audio: $(this).data('audio'),
                             artist: $(this).data('artist'),
                             title: $(this).data('title'),
-                            image: $(this).data('image')
+                            image: $(this).data('image') || $(this).data('artwork') || 'default-image.jpg'
                         };
                     }).get();
 
@@ -82,7 +83,7 @@ $(document).ready(function () {
                         audio,
                         artist,
                         title,
-                        image
+                        image // Now guaranteed to have a value
                     }, playlist, index);
 
                     $('#playerBar').show();
@@ -94,15 +95,25 @@ $(document).ready(function () {
             this.currentTrack = track;
             this.playlist = playlist;
             this.currentIndex = index;
-
             this.audio.src = track.audio;
-            this.audio.play().then(() => {
-                this.isPlaying = true;
-                this.updatePlayerUI();
-                this.saveState();
-            }).catch(e => {
-                console.error('Playback failed:', e);
-            });
+
+            const playAttempt = () => {
+                this.audio.play()
+                    .then(() => {
+                        this.isPlaying = true;
+                        this.updatePlayerUI();
+                        this.saveState();
+                    })
+                    .catch(e => {
+                        console.error("Playback failed:", e);
+                        // Show a tooltip near the play button (example with Bootstrap)
+                        $('#playBtn').attr('title', 'Click to play').tooltip('show');
+                        setTimeout(() => $('#playBtn').tooltip('hide'), 2000);
+                    });
+            };
+
+            // Try immediately (works during click events)
+            playAttempt();
         },
 
         togglePlay() {
@@ -110,7 +121,12 @@ $(document).ready(function () {
                 if (this.isPlaying) {
                     this.audio.pause();
                 } else {
-                    this.audio.play().catch(e => console.error('Playback failed:', e));
+                    // Only play if user explicitly clicks the play button
+                    this.audio.play().catch(e => {
+                        console.error('Playback failed:', e);
+                        // Show a message to the user (optional)
+                        alert('Please click the play button to start playback.');
+                    });
                 }
                 this.isPlaying = !this.isPlaying;
                 this.updatePlayerUI();
@@ -213,6 +229,11 @@ $(document).ready(function () {
                 // Update play/pause buttons
                 const playIcon = this.isPlaying ? 'fa-pause' : 'fa-play';
                 $('#playBtn').html(`<i class="fas ${playIcon}"></i>`);
+                this.audio.oncanplay = () => {
+                    // Update to play/pause icon when ready
+                    const icon = this.isPlaying ? 'fa-pause' : 'fa-play';
+                    $('#playBtn').html(`<i class="fas ${icon}"></i>`);
+                };
                 $('#fullPlayBtn').html(`<i class="fas ${playIcon} fa-2x"></i>`);
             }
         },
@@ -243,7 +264,7 @@ $(document).ready(function () {
     window.playerState = playerState;
     playerState.init();
 
-     // Make sure player persists during SPA navigation
+    // Make sure player persists during SPA navigation
     $(document).on('spa:navigate', () => {
         playerState.saveState();
     });

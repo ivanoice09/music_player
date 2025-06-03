@@ -5,10 +5,11 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Search form -->
             <ul class="navbar-nav mx-md-auto">
                 <?php include APP_ROOT . '/app/views/partials/searchBar.php'; ?>
+
             </ul>
+            
             <ul class="navbar-nav ml-md-auto">
                 <?php if (isLoggedIn()): ?>
                     <li class="nav-item">
@@ -29,3 +30,4 @@
         </div>
     </div>
 </nav>
+

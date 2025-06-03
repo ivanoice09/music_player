@@ -34,7 +34,13 @@ $routes = [
     'debbug' => [
         'controller' => 'HomeController',
         'action' => 'index'
-    ]
+    ],
+
+    // TEMPLATES
+    'templates' => [
+        'controller' => 'MusicController',
+        'action' => 'loadTemplate'
+    ],
 ];
 
 // Helper functions

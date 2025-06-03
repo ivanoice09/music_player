@@ -1,6 +1,7 @@
 $(document).ready(function () {
     const playerBar = $('#playerBar');
     const mainContainer = $('#mainView'); // Consistent container reference
+    const templateCache = {};
     let debounceTimer;
 
     // Initialize - hide player bar
@@ -48,7 +49,7 @@ $(document).ready(function () {
     function fetchPopularSongs() {
         $.ajax({
             url: 'popular',
-            success: (data) => displayResults(data, 'Popular Songs'),
+            success: (data) => displayResults(data, 'Popular Songs', 'song-grid'),
             error: () => showError('Error loading popular songs')
         });
     }
@@ -58,26 +59,42 @@ $(document).ready(function () {
         $.ajax({
             url: 'search',
             data: { q: query },
-            success: (data) => displayResults(data, 'Search Songs'),
+            success: (data) => displayResults(data, `Results for "${query}"`, 'song-grid'),
             error: () => showError('Error loading results')
         });
     }
 
+    async function loadTemplate(templateName) {
+        if (!templateCache[templateName]) {
+            try {
+                const url = `templates?name=${templateName}`;
+                const response = await fetch(url);
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const html = await response.text();
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                const templateElement = document.getElementById(`${templateName}-template`);
+                if (!templateElement) throw new Error(`Template ${templateName}-template not found in response`);
+
+                templateCache[templateName] = templateElement.innerHTML;
+            } catch (error) {
+                console.error('Failed to load template:', error);
+                throw error; // Re-throw to handle in displayResults()
+            }
+        }
+        return templateCache[templateName];
+    }
+
     // Function to display search results
-    function displayResults(results, title = '') {
+    async function displayResults(results, title = '', templateName = '') {
         const mainContainer = $('#mainView');
         if (results?.length > 0) {
-            // Get the template source
-            const source = document.getElementById('song-template').innerHTML;
-            // Compile the template
+            await loadTemplate(templateName);
+            const source = templateCache[templateName];
             const template = Handlebars.compile(source);
-            // Render the template with data
-            const html = template({
-                title,  // Optional title (e.g., "Popular Songs")
-                songs: results // Array of song objects
-            });
-            // Update the DOM
-            mainContainer.html(html);
+            mainContainer.html(template({ title, songs: results }));
         } else {
             mainContainer.html('<div class="alert alert-warning">No results found.</div>');
         }

@@ -76,4 +76,19 @@ class MusicController extends BaseController
 
         $this->view('layouts/main', $data);
     }
+
+    public function loadTemplate()
+    {
+        $template = $_GET['name'] ?? 'song-grid';
+        $templatePath = APP_ROOT . "/app/views/templates/{$template}.php";
+
+        if (file_exists($templatePath)) {
+            header('Content-Type: text/html');
+            readfile($templatePath);
+            exit;
+        } else {
+            header("HTTP/1.0 404 Not Found");
+            echo "Template not found.";
+        }
+    }
 }
