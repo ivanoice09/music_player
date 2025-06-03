@@ -44,11 +44,11 @@ $(document).ready(function () {
         performSearch(query);
     }
 
-    // New function to fetch popular songs
+    // Function to fetch popular songs
     function fetchPopularSongs() {
         $.ajax({
             url: 'popular',
-            success: (data) => displayResults(data),
+            success: (data) => displayResults(data, 'Popular Songs'),
             error: () => showError('Error loading popular songs')
         });
     }
@@ -58,39 +58,35 @@ $(document).ready(function () {
         $.ajax({
             url: 'search',
             data: { q: query },
-            success: (data) => displayResults(data),
+            success: (data) => displayResults(data, 'Search Songs'),
             error: () => showError('Error loading results')
         });
     }
 
     // Function to display search results
-    function displayResults(results) {
+    function displayResults(results, title = '') {
+        const mainContainer = $('#mainView');
         if (results?.length > 0) {
-            let html = results.map(song => `
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="song-card card h-100"
-                        data-audio="${song.audio}" 
-                        data-title="${song.name}" 
-                        data-artist="${song.artist_name}" 
-                        data-artwork="${song.image}">
-                        <img src="${song.image}" class="card-img-top" alt="${song.name}">
-                        <div class="card-body">
-                            <h5 class="card-title">${song.name}</h5>
-                            <p class="card-text text-muted">${song.artist_name}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            // Get the template source
+            const source = document.getElementById('song-template').innerHTML;
+            // Compile the template
+            const template = Handlebars.compile(source);
+            // Render the template with data
+            const html = template({
+                title,  // Optional title (e.g., "Popular Songs")
+                songs: results // Array of song objects
+            });
+            // Update the DOM
             mainContainer.html(html);
         } else {
-            showError('No results found');
+            mainContainer.html('<div class="alert alert-warning">No results found.</div>');
         }
     }
 
     // Check URL on page load for popular songs request
     function loadInitialView() {
         const urlParams = new URLSearchParams(window.location.search);
-        
+
         if (urlParams.has('q')) {
             performSearch(urlParams.get('q'));
         } else {

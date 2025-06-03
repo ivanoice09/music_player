@@ -21,11 +21,11 @@ $routes = [
         'controller' => 'MusicController',
         'action' => 'loadView'
     ],
-    'search' => [ // THIS CUSTOM ROUTE BRINGS THE RESULTS TO search.php CONTAINER
+    'search' => [ // route for searching function
         'controller' => 'MusicController',
         'action' => 'getSearchedSongs'
     ],
-    'popular' => [
+    'popular' => [ // route for home page
         'controller' => 'MusicController',
         'action' => 'getPopularSongs'
     ],
