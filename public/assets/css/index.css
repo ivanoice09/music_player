@@ -45,3 +45,19 @@ body.music-layout .list-group-item {
     from {opacity: 1;}
     to {opacity: 0;}
 }
+
+/* Add Smooth Transitions: */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styling (for modern browsers) */
+::-webkit-scrollbar {
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+}
