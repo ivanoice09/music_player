@@ -61,3 +61,25 @@ body.music-layout .list-group-item {
 ::-webkit-scrollbar-thumb {
     background: #444;
 }
+
+/* Popover menu */
+.popover-profile-menu {
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.popover-profile-menu .dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+}
+
+.popover-profile-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.popover-profile-menu .bi {
+    margin-right: 0.5rem;
+}

@@ -3,8 +3,15 @@
     <div class="navbar-icons">
         <!-- Profile Icon with Popover -->
         <div class="nav-item">
-            <a class="nav-icon" id="profilePopover" tabindex="0" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus">
+            <a class="nav-icon" 
+                id="profilePopover" 
+                tabindex="0" 
+                data-bs-toggle="popover" 
+                data-bs-placement="right" 
+                data-bs-trigger="focus">
+
                 <i class="bi bi-person-fill"></i>
+
             </a>
         </div>
 
