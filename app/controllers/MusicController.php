@@ -70,6 +70,7 @@ class MusicController extends BaseController
 
         // Prepare data for the view
         $data = [
+            'is_music_page' => true,
             'query' => htmlspecialchars($query),
             'search_performed' => !empty($query)
         ];
