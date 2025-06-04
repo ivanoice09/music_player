@@ -27,7 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 </head>
 
-<body>
+<body class="<?php echo isset($data['is_music_page']) ? 'music-layout' : 'default-layout'; ?>">
     <?php
     // Only show navbar if not explicitly hidden
     if (!isset($data['hide_navbar']) || !$data['hide_navbar']) {

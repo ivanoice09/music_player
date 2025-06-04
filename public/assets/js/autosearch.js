@@ -59,7 +59,7 @@ $(document).ready(function () {
         $.ajax({
             url: 'search',
             data: { q: query },
-            success: (data) => displayResults(data, `Results for "${query}"`, 'song-grid'),
+            success: (data) => displayResults(data, `Results for "${query}"`, 'song-list'),
             error: () => showError('Error loading results')
         });
     }

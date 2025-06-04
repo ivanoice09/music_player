@@ -3,7 +3,7 @@
   <div class="row">
     {{#each songs}}
       <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 song-card" 
+        <div class="card h-100 song-card text-white" 
              data-audio="{{audio}}" 
              data-title="{{name}}" 
              data-artist="{{artist_name}}"

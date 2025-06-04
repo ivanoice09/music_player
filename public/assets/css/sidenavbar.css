@@ -38,18 +38,31 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Dropdown styling */
-.dropdown-menu {
-    background-color: #343a40;
-    border: none;
-    margin-left: 10px;
+/* Only show sidebar in music layout */
+body.music-layout .navbar-vertical {
+    display: block;
 }
 
-.dropdown-item {
-    color: rgba(255, 255, 255, 0.7);
+body.default-layout .navbar-vertical {
+    display: none;
 }
 
-.dropdown-item:hover {
-    color: white;
-    background-color: transparent;
+/* Popover styling */
+.popover-profile-menu {
+    padding: 0.5rem 0;
+}
+
+.popover-profile-menu .dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+}
+
+.popover-profile-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.popover-profile-menu .bi {
+    margin-right: 0.5rem;
 }

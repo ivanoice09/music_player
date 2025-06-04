@@ -1,4 +1,3 @@
-
 <!-- NAVBAR 2.0 -->
 <nav class="navbar-vertical fixed-left">
     <div class="navbar-icons">
@@ -23,11 +22,13 @@
 </nav>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the popover
-    const profilePopover = new bootstrap.Popover(document.getElementById('profilePopover'), {
-        html: true,
-        content: `
+    document.addEventListener('DOMContentLoaded', function() {
+        const isLoggedIn = <?= isLoggedIn() ? 'true' : 'false' ?>;
+        const profilePopover = document.getElementById('profilePopover');
+
+        // Set popover content based on login status
+        const popoverContent = isLoggedIn ?
+            `
             <div class="popover-profile-menu">
                 <a class="dropdown-item" href="<?= URL_ROOT ?>/profile">
                     <i class="bi bi-person-square"></i> Profile
@@ -36,7 +37,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="bi bi-box-arrow-right"></i> Logout
                 </a>
             </div>
-        `
+          ` :
+            `
+            <div class="popover-profile-menu">
+                <a class="dropdown-item" href="<?= URL_ROOT ?>/auth/login">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                </a>
+                <a class="dropdown-item" href="<?= URL_ROOT ?>/auth/register">
+                    <i class="bi bi-person-plus"></i> Register
+                </a>
+            </div>
+          `;
+
+        // Initialize popover
+        new bootstrap.Popover(profilePopover, {
+            html: true,
+            content: popoverContent,
+            placement: 'right',
+            trigger: 'focus'
+        });
     });
-});
 </script>

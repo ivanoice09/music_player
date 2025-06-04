@@ -2,7 +2,7 @@
   {{#if title}}<h2 class="mb-4">{{title}}</h2>{{/if}}
   <ul class="list-group">
     {{#each songs}}
-      <li class="list-group-item song-card" 
+      <li class="list-group-item song-card text-white" 
           data-audio="{{audio}}" 
           data-title="{{name}}" 
           data-artist="{{artist_name}}"

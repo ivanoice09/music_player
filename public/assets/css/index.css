@@ -1,7 +1,21 @@
-body {
-    padding-top: 6%;
-    padding-left: 5%;
-    background-color: #2e3339;
+/* Default Layout (Auth Pages) */
+body.default-layout {
+    background-color: #f8f9fa;
+}
+
+/* Music Layout */
+body.music-layout {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    margin-left: 5%;
+    padding-top: 80px;
+}
+
+/* Only apply dark cards in music layout */
+body.music-layout .card,
+body.music-layout .list-group-item {
+    background-color: #1e1e1e;
+    border-color: #333;
 }
 
 /* Flash messages */
@@ -23,21 +37,11 @@ body {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-
-    to {
-        opacity: 0;
-    }
+    from {opacity: 1;}
+    to {opacity: 0;}
 }
