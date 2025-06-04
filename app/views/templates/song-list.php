@@ -1,4 +1,5 @@
 <script id="song-list-template" type="text/x-handlebars-template">
+  <!-- TEMPLATE TYPE: LIST VIEW -->
   {{#if title}}<h2 class="mb-4">{{title}}</h2>{{/if}}
   <ul class="list-group">
     {{#each songs}}

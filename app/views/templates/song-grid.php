@@ -1,4 +1,5 @@
 <script id="song-grid-template" type="text/x-handlebars-template">
+  <!-- TEMPLATE TYPE: GRID VIEW -->
   {{#if title}}<h2 class="mb-4">{{title}}</h2>{{/if}}
   <div class="row">
     {{#each songs}}
