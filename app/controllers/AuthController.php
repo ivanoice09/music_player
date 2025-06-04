@@ -104,6 +104,7 @@ class AuthController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Init data with proper sanitization
             $data = [
+                'is_music_page' => false,
                 'username' => $this->sanitizeInput($_POST['username'] ?? ''),
                 'password' => trim($_POST['password'] ?? ''),
                 'username_err' => '',
