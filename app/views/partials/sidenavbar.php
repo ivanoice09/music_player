@@ -21,10 +21,10 @@
         </a>
 
         <!-- Placeholder Icons -->
-        <a class="nav-icon"><i class="bi bi-plus-circle-fill"></i></a>
+        <a class="nav-icon" href="#" id="create-playlist-link"><i class="bi bi-plus-circle-fill"></i></a>
         <a class="nav-icon"><i class="bi bi-heart-fill"></i></a>
         <a class="nav-icon"><i class="bi bi-star-fill"></i></a>
-        <a class="nav-icon"><i class="bi bi-collection-fill"></i></a>
+        <a class="nav-icon" href="#" id="library-link"><i class="bi bi-collection-fill"></i></a>
     </div>
 </nav>
 

@@ -23,6 +23,11 @@
     <!-- SEARCH BAR -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/searchbar.css">
 
+    <!-- LIBRARY -->
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/library.css">
+    <!-- PLAYLIST -->
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playlist.css">
+
     <!-- HANDLEBARS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 </head>

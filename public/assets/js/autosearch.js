@@ -4,9 +4,10 @@ $(document).ready(function () {
     const templateCache = {};
     let debounceTimer;
 
-    // Initialize - hide player bar
-    playerBar.hide();
+    playerBar.hide(); // Initialize - hide player bar
     loadInitialView(); // Renamed from checkInitialView for clarity
+
+    // ======================= DIVIDER =======================
 
     // Handle popular songs anchor click
     $('#homeLink').click(function (e) {
@@ -29,6 +30,20 @@ $(document).ready(function () {
         }
     });
 
+    // Event listener for library nav link
+    $('#library-link').click(function (e) {
+        e.preventDefault();
+        loadLibraryView();
+    });
+
+    // Add event listener for create playlist
+    $('#create-playlist-link').on('click', function (e) {
+        e.preventDefault();
+        createNewPlaylist();
+    });
+
+    // ======================= DIVIDER =======================
+
     // Consolidated function for popular songs
     function showPopularSongs() {
         mainContainer.html('<div class="col-12 text-center">Loading popular songs...</div>');
@@ -45,11 +60,56 @@ $(document).ready(function () {
         performSearch(query);
     }
 
+    // Consolidated function for Library's page view
+    function loadLibraryView() {
+        if (!isLoggedIn()) {
+            showAuthRequiredModal();
+            return;
+        }
+
+        mainContainer.html('<div class="col-12 text-center">Loading library...</div>');
+        window.history.pushState({ view: 'library' }, '', `${URL_ROOT}/library`);
+
+        $.ajax({
+            url: 'library',
+            success: (data) => displayLibraryContent(data),
+            error: () => showError('Error loading library')
+        });
+    }
+
+    // Consolidated function for Playlists' page view
+    function loadPlaylistView(playlistId) {
+        if (!isLoggedIn()) {
+            showAuthRequiredModal();
+            return;
+        }
+
+        mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
+        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist/${playlistId}`);
+
+        $.ajax({
+            url: `playlist/${playlistId}`,
+            success: (data) => displayPlaylistContent(data),
+            error: () => showError('Error loading playlist')
+        });
+    }
+
+    function createNewPlaylist() {
+        $.ajax({
+            url: 'playlist/create',
+            method: 'POST',
+            success: (data) => loadPlaylistView(data.id),
+            error: () => showError('Error creating playlist')
+        });
+    }
+
+    // ======================= DIVIDER =======================
+
     // Function to fetch popular songs
     function fetchPopularSongs() {
         $.ajax({
             url: 'popular',
-            success: (data) => displayResults(data, 'Popular Songs', ''), // Template is changeable(in 3rd argument)
+            success: (data) => displayResults(data, 'Popular Songs', 'song-grid'), // Template is changeable(in 3rd argument)
             error: () => showError('Error loading popular songs')
         });
     }
@@ -59,11 +119,14 @@ $(document).ready(function () {
         $.ajax({
             url: 'search',
             data: { q: query },
-            success: (data) => displayResults(data, `Results for "${query}"`, ''), // Template is changeable(in 3rd argument)
+            success: (data) => displayResults(data, `Results for "${query}"`, 'song-list'), // Template is changeable(in 3rd argument)
             error: () => showError('Error loading results')
         });
     }
 
+    // ======================= DIVIDER =======================
+
+    // load template for songs' layout structures (grid, list)
     async function loadTemplate(templateName) {
         if (!templateCache[templateName]) {
             try {
@@ -87,7 +150,9 @@ $(document).ready(function () {
         return templateCache[templateName];
     }
 
-    // Function to display search results
+    // ======================= DIVIDER =======================
+
+    // Function to display searching songs results
     async function displayResults(results, title = '', templateName = 'song-grid') {
         const mainContainer = $('#mainView');
         if (results?.length > 0) {
@@ -99,6 +164,43 @@ $(document).ready(function () {
             mainContainer.html('<div class="alert alert-warning">No results found.</div>');
         }
     }
+
+    // After loading display it
+    async function displayLibraryContent(data, layout = 'grid', sort = 'recent') {
+        // Sort data
+        const sortedData = sortLibraryData(data, sort);
+
+        // Load appropriate template
+        const templateName = `library-${layout}`;
+        await loadTemplate(templateName);
+        const source = templateCache[templateName];
+        const template = Handlebars.compile(source);
+
+        // Register helper for item_type comparison
+        Handlebars.registerHelper('eq', function (a, b, options) {
+            return a === b ? options.fn(this) : options.inverse(this);
+        });
+
+        mainContainer.html(template({ items: sortedData }));
+    }
+
+    async function displayPlaylistContent(data) {
+        await loadTemplate('playlist-view');
+        const source = templateCache['playlist-view'];
+        const template = Handlebars.compile(source);
+        mainContainer.html(template({ playlist: data }));
+
+        // Setup editable playlist name
+        $('#playlistName').on('blur', function () {
+            const newName = $(this).text();
+            updatePlaylistName(data.id, newName);
+        });
+
+        // Setup image upload
+        $('#playlistImageUpload').on('change', handleImageUpload);
+    }
+
+    // ======================= DIVIDER =======================
 
     // Check URL on page load for popular songs request
     function loadInitialView() {

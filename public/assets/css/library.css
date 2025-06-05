@@ -1,0 +1,26 @@
+/* Library Items */
+.library-item {
+    background-color: #2a2a2a;
+    border-color: #444;
+    transition: transform 0.2s;
+}
+
+.library-item:hover {
+    transform: translateY(-3px);
+}
+
+.library-item.pinned {
+    border-left: 4px solid var(--bs-primary);
+}
+
+.pin-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.library-item:hover .pin-btn {
+    opacity: 1;
+}

@@ -1,0 +1,31 @@
+/* Playlist View */
+.playlist-image-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.playlist-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #333;
+    padding: 20px;
+}
+
+.change-image-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+[contenteditable="true"] {
+    border-bottom: 1px dashed #666;
+    padding-bottom: 2px;
+}
+
+[contenteditable="true"]:focus {
+    outline: none;
+    border-bottom-color: var(--bs-primary);
+}

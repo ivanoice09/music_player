@@ -17,17 +17,20 @@ $routes = [
     ],
 
     // MAIN PAGES ROUTES
-    'main' => [
+    'main' => [ // route for page viewing
         'controller' => 'MusicController',
         'action' => 'loadView'
     ],
-    'search' => [ // route for searching function
+    'search' => [ // route for search results page
         'controller' => 'MusicController',
         'action' => 'getSearchedSongs'
     ],
     'popular' => [ // route for home page
         'controller' => 'MusicController',
         'action' => 'getPopularSongs'
+    ],
+    'library' => [
+        ''
     ],
 
     // DEBBUGGING

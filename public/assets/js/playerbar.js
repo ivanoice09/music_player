@@ -257,8 +257,70 @@ $(document).ready(function () {
             };
 
             sessionStorage.setItem('playerState', JSON.stringify(stateToSave));
-        }
+        },
+
+        // PLAYLIST MANAGEMENT
+
+        showAddToPlaylistToast: function () {
+            if (!this.currentTrack) return;
+
+            $.get('/playlists', (playlists) => {
+                const $toast = $(`
+                <div class="toast show" role="alert" style="position: fixed; bottom: 80px; right: 20px;">
+                    <div class="toast-header">
+                        <strong>Add to Playlist</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        <ul class="list-group">
+                            ${playlists.map(p => `
+                                <li class="list-group-item d-flex justify-content-between">
+                                    ${p.name}
+                                    <i class="fas ${p.songs.includes(playerState.currentTrack.id) ? 'fa-check-circle text-success' : 'fa-circle'}"></i>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="d-flex justify-content-end mt-2">
+                            <button class="btn btn-sm btn-outline-secondary me-2 cancel-btn">Cancel</button>
+                            <button class="btn btn-sm btn-primary add-btn">Add</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+
+                $('body').append($toast);
+
+                $toast.find('.list-group-item').on('click', function () {
+                    $(this).find('i').toggleClass('fa-circle fa-check-circle text-success');
+                });
+
+                $toast.find('.add-btn').on('click', () => {
+                    const selected = $toast.find('.fa-check-circle').closest('li');
+                    const playlistIds = selected.map(function () {
+                        return $(this).data('id');
+                    }).get();
+
+                    this.addToPlaylists(playlistIds);
+                    $toast.remove();
+                });
+
+                $toast.find('.cancel-btn, .btn-close').on('click', () => $toast.remove());
+            });
+        },
+
+        addToPlaylists: function (playlistIds) {
+            // API call to add current track to selected playlists
+        },
     };
+
+    // Add plus button to player bar
+    $('#playerBar').append(`
+        <button class="btn btn-link text-white add-to-playlist-btn">
+            <i class="fas fa-plus"></i>
+        </button>
+    `);
+
+    $('.add-to-playlist-btn').on('click', () => playerState.showAddToPlaylistToast());
 
     // Initialize player
     window.playerState = playerState;
