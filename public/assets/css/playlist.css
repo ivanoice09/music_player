@@ -29,3 +29,14 @@
     outline: none;
     border-bottom-color: var(--bs-primary);
 }
+
+/* Playlist Preview Cards */
+.playlist-card .card-img-top {
+    height: 150px;
+    object-fit: cover;
+}
+
+.default-playlist {
+    background-color: rgba(41, 98, 255, 0.1);
+    border-color: var(--bs-primary);
+}

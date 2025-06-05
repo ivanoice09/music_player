@@ -206,4 +206,10 @@ class AuthController extends BaseController
     {
         return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     }
+
+    public function authModal()
+    {
+        require_once APP_ROOT . '/app/views/partials/authModal.php';
+        exit;
+    }
 }

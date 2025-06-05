@@ -28,6 +28,9 @@
     <!-- PLAYLIST -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playlist.css">
 
+    <!-- AUTH MODAL -->
+     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/authModal.css">
+
     <!-- HANDLEBARS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 </head>

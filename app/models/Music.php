@@ -56,4 +56,43 @@ class Music
 
         return $result;
     }
+
+    public function getPopularArtists($limit = 3)
+    {
+        $url = JAMENDO_BASE_URL . '/artists/?client_id=' . $this->clientId .
+            '&format=jsonpretty&limit=' . $limit . '&order=popularity_total';
+
+        $result = $this->callApi($url);
+        return array_map(function ($artist) {
+            return [
+                'id' => $artist['id'],
+                'name' => $artist['name'],
+                'image' => $artist['image'] ?? 'default-artist.jpg'
+            ];
+        }, $result['results'] ?? []);
+    }
+
+    public function getPopularAlbums($limit = 3)
+    {
+        $url = JAMENDO_BASE_URL . '/albums/?client_id=' . $this->clientId .
+            '&format=jsonpretty&limit=' . $limit . '&order=popularity_total';
+
+        $result = $this->callApi($url);
+        return array_map(function ($album) {
+            return [
+                'id' => $album['id'],
+                'name' => $album['name'],
+                'image' => $album['image'],
+                'artist_name' => $album['artist_name']
+            ];
+        }, $result['results'] ?? []);
+    }
+
+    public function getArtistAlbums($artistId)
+    {
+        $url = JAMENDO_BASE_URL . '/albums/?client_id=' . $this->clientId .
+            '&format=jsonpretty&artist_id=' . $artistId;
+
+        return $this->callApi($url);
+    }
 }

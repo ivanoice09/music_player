@@ -15,8 +15,12 @@ $routes = [
         'controller' => 'AuthController',
         'action' => 'logout'
     ],
+    'partials/authModal' => [
+        'controller' => 'AuthController',
+        'action' => 'authModal'
+    ],
 
-    // MAIN PAGES ROUTES
+    // MAIN PAGES
     'main' => [ // route for page viewing
         'controller' => 'MusicController',
         'action' => 'loadView'
@@ -29,8 +33,45 @@ $routes = [
         'controller' => 'MusicController',
         'action' => 'getPopularSongs'
     ],
+
+    // LIBRARY
     'library' => [
-        ''
+        'controller' => 'LibraryController',
+        'action' => 'index'
+    ],
+    'library/add' => [
+        'controller' => 'LibraryController',
+        'action' => 'add'
+    ],
+    'library/remove' => [
+        'controller' => 'LibraryController',
+        'action' => 'remove'
+    ],
+    'library/pin' => [
+        'controller' => 'LibraryController',
+        'action' => 'pin'
+    ],
+
+    // PLAYLIST
+    'playlist/view/(\d+)' => [
+        'controller' => 'PlaylistController',
+        'action' => 'view'
+    ],
+    'playlist/create' => [
+        'controller' => 'PlaylistController',
+        'action' => 'create'
+    ],
+    'playlist/add-song' => [
+        'controller' => 'PlaylistController',
+        'action' => 'addSong'
+    ],
+    'playlist/remove-song' => [
+        'controller' => 'PlaylistController',
+        'action' => 'removeSong'
+    ],
+    'playlist/update' => [
+        'controller' => 'PlaylistController',
+        'action' => 'update'
     ],
 
     // DEBBUGGING

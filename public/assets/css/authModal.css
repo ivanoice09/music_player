@@ -1,0 +1,17 @@
+/* Auth Modal Styles */
+#authRequiredModal .modal-content {
+    border: 1px solid #444;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#authRequiredModal .modal-header {
+    border-bottom: 1px solid #444;
+}
+
+#authRequiredModal .modal-footer {
+    border-top: 1px solid #444;
+}
+
+#authRequiredModal .btn-close {
+    filter: invert(1);
+}
