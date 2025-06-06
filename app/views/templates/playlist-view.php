@@ -40,6 +40,6 @@
       </ul>
     {{else}}
       <div class="alert alert-info">This playlist is empty. Search for songs to add.</div>
-    {{/endif}}
+    {{/if}}
   </div>
 </script>

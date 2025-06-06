@@ -53,13 +53,29 @@ $routes = [
     ],
 
     // PLAYLIST
-    'playlist/view/(\d+)' => [
-        'controller' => 'PlaylistController',
-        'action' => 'view'
-    ],
-    'playlist/create' => [
+    /**
+     *   How my playlist flow works:
+     * 
+     *   1) user clicks on plus button "create playlist"
+     * 
+     *   2) the playlist/create route gets used to create a playlist and to return user's ID 
+     *   through javascript's event listener
+     * 
+     *   3) PlaylistController invokes create() method
+     * 
+     *   4) create() method passes the data to javascript's loadPlaylistView function
+     * 
+     *   5) loadPlaylistView function invokes the `playlist/${playlistId}`
+     * 
+     *   6) this `playlist/${playlistId}` route would show the playlist-view template
+     */
+    'create' => [
         'controller' => 'PlaylistController',
         'action' => 'create'
+    ],
+    'playlist' => [
+        'controller' => 'PlaylistController',
+        'action' => 'show'
     ],
     'playlist/add-song' => [
         'controller' => 'PlaylistController',

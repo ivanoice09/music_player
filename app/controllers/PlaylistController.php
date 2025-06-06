@@ -8,22 +8,23 @@ class PlaylistController extends BaseController
         $this->userModel = new User();
     }
 
-    public function view($playlistId, $data = null)
+    public function show($playlistId)
     {
         if (!isset($_SESSION['user_id'])) {
-            header('HTTP/1.0 401 Unauthorized');
-            exit;
+            http_response_code(401);
+            exit(json_encode(['error' => 'Unauthorized']));
         }
 
         $playlist = $this->userModel->getPlaylist($_SESSION['user_id'], $playlistId);
 
-        if ($this->isAjaxRequest()) {
-            header('Content-Type: application/json');
-            echo json_encode($playlist);
-            exit;
-        } else {
-            $this->view('templates/playlist-view', ['playlist' => $playlist]);
+        if (!$playlist) {
+            http_response_code(404);
+            exit(json_encode(['error' => 'Playlist not found']));
         }
+
+        header('Content-Type: application/json');
+        echo json_encode($playlist);
+        exit;
     }
 
     public function create()
@@ -36,14 +37,20 @@ class PlaylistController extends BaseController
         $playlistCount = $this->userModel->getUserPlaylistCount($_SESSION['user_id']);
         $newPlaylist = [
             'name' => 'MyPlaylist' . ($playlistCount + 1),
-            'image_url' => URL_ROOT . '/assets/images/default-playlist.png'
+            'image_url' => URL_ROOT . '/assets/images/default-playlist.png',
+            'description' => ''
         ];
 
         $playlistId = $this->userModel->createPlaylist($_SESSION['user_id'], $newPlaylist);
 
+        // Return full playlist structure including empty songs array
+        header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
-            'id' => $playlistId
+            'id' => $playlistId,
+            'name' => $newPlaylist['name'],
+            'image_url' => $newPlaylist['image_url'],
+            'songs' => [] // Explicit empty array
         ]);
         exit;
     }

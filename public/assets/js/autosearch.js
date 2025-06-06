@@ -92,13 +92,13 @@ $(document).ready(function () {
         loadLibraryView();
     });
 
-    // Add event listener for create playlist
-    $('#create-playlist-link').click(function (e) {
+    // Add event listener to create playlist
+    $('#createPlaylistBtn').click(function (e) {
+        e.preventDefault();
         if (!checkAuth()) {
             showAuthRequiredModal();
             return;
         }
-        e.preventDefault();
         createNewPlaylist();
     });
 
@@ -193,7 +193,6 @@ $(document).ready(function () {
 
     // Displays Library's UI
     async function displayLibraryContent(data, layout = 'grid', sort = 'recent') {
-
         // Sort data
         const sortedData = sortLibraryData(data, sort);
 
@@ -209,6 +208,47 @@ $(document).ready(function () {
         document.querySelectorAll('.pin-btn').forEach(btn => {
             btn.addEventListener('click', togglePinItem);
         });
+    }
+
+    // Displays Playlist's UI
+    async function displayPlaylistContent(data) {
+        try {
+            console.log('Displaying playlist data:', data); // Debug log
+
+            const templateName = 'playlist-view';
+            await loadTemplate(templateName);
+
+            const source = templateCache[templateName];
+            const template = Handlebars.compile(source);
+
+            // Ensure proper data structure
+            const viewData = {
+                playlist: {
+                    id: data.id,
+                    name: data.name,
+                    image_url: data.image_url,
+                    songs: data.songs || [] // Ensure songs array exists
+                }
+            };
+
+            mainContainer.html(template(viewData));
+
+            // Setup editable playlist name
+            $('#playlistName').on('blur', function () {
+                const newName = $(this).text();
+                updatePlaylistName(data.id, newName);
+            });
+
+            // Setup image upload
+            $('.change-image-btn').on('click', function () {
+                $('#playlistImageUpload').click();
+            });
+            $('#playlistImageUpload').on('change', handleImageUpload);
+
+        } catch (error) {
+            console.error('Error displaying playlist:', error);
+            showError('Failed to load playlist view');
+        }
     }
 
     // ===============
@@ -251,11 +291,14 @@ $(document).ready(function () {
 
     // Consolidated function for Library page view
     function loadLibraryView() {
+        const url = 'library';
+        console.log('Loading playlist from:', url);
+
         mainContainer.html('<div class="col-12 text-center">Loading library...</div>');
         window.history.pushState({ view: 'library' }, '', `${URL_ROOT}/library`);
 
         $.ajax({
-            url: 'library',
+            url: url,
             success: (data) => displayLibraryContent(data),
             error: () => showError('Error loading library')
         });
@@ -263,13 +306,27 @@ $(document).ready(function () {
 
     // Consolidated function for Playlist page view
     function loadPlaylistView(playlistId) {
+        const url = 'playlist';
+        console.log('Loading playlist from:', url);  // Debug log
+
         mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
-        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist/${playlistId}`);
+        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist`);
 
         $.ajax({
-            url: `playlist/${playlistId}`,
-            success: (data) => displayPlaylistContent(data),
-            error: () => showError('Error loading playlist')
+            url: url,
+            dataType: 'json',
+            success: (data) => {
+                console.log('Playlist data received:', data); // Add this line
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    displayPlaylistContent(data);
+                }
+            },
+            error: (xhr) => {
+                const errorMsg = xhr.responseJSON?.error || 'Error loading playlist';
+                showError(`${errorMsg} (Status: ${xhr.status})`);
+            }
         });
     }
 
@@ -304,9 +361,13 @@ $(document).ready(function () {
     // ========================
     function createNewPlaylist() {
         $.ajax({
-            url: 'playlist/create',
+            url: 'create',
             method: 'POST',
-            success: (data) => loadPlaylistView(data.id),
+            success: (data) => {
+                if (data.success && data.id) {
+                    loadPlaylistView(data.id);
+                }
+            },
             error: () => showError('Error creating playlist')
         });
     }
@@ -365,22 +426,6 @@ $(document).ready(function () {
         const toast = $(`<div class="toast">${message}</div>`);
         $('body').append(toast);
         setTimeout(() => toast.remove(), 3000);
-    }
-
-    async function displayPlaylistContent(data) {
-        await loadTemplate('playlist-view');
-        const source = templateCache['playlist-view'];
-        const template = Handlebars.compile(source);
-        mainContainer.html(template({ playlist: data }));
-
-        // Setup editable playlist name
-        $('#playlistName').on('blur', function () {
-            const newName = $(this).text();
-            updatePlaylistName(data.id, newName);
-        });
-
-        // Setup image upload
-        $('#playlistImageUpload').on('change', handleImageUpload);
     }
 
     // ======================= DIVIDER =======================

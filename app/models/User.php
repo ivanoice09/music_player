@@ -68,8 +68,9 @@ class User
         }
     }
 
-    // FOR LIBRARY FUNCTIONALITY
-
+    //======================
+    // LIBRARY FUNCTIONALITY
+    //======================
     // Add these methods to your User model
     public function getLibrary($userId)
     {
@@ -141,8 +142,9 @@ class User
         return $stmt->execute([$pinned ? 1 : 0, $userId, $itemId]);
     }
 
-    // FOR PLAYLIST FUNCTIONALITY
-
+    //=======================
+    // PLAYLIST FUNCTIONALITY
+    //=======================
     public function getUserPlaylistCount($userId)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM playlists WHERE user_id = ?");
