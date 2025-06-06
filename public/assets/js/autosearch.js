@@ -1,16 +1,65 @@
 $(document).ready(function () {
+    // ========================
+    // HANDLEBARS CONFIGURATION
+    // ========================
+    // Equality helper
+    Handlebars.registerHelper('eq', function (a, b, options) {
+        // When used as inline helper (no options parameter)
+        if (arguments.length === 2 || !options.fn) {
+            return a === b;
+        }
+        // When used as block helper
+        return a === b ? options.fn(this) : options.inverse(this);
+    });
+
+    // JSON stringify helper
+    Handlebars.registerHelper('json', function (context) {
+        return JSON.stringify(context);
+    });
+
+    // Format duration (seconds to MM:SS)
+    Handlebars.registerHelper('formatDuration', function (seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    });
+
+    // ==============
+    // ERROR HANDLERS
+    // ==============
+    function showError(message, duration = 3000) {
+        const errorElement = $(`<div class="alert alert-danger">${message}</div>`);
+        $('#mainView').prepend(errorElement);
+        setTimeout(() => errorElement.fadeOut(), duration);
+    }
+
+    // =================
+    // APPLICATION SETUP
+    // =================
     const playerBar = $('#playerBar');
     const mainContainer = $('#mainView'); // Consistent container reference
     const templateCache = {};
     let debounceTimer;
 
+    // simple check if logged in
+    function checkAuth() {
+        return authStatus.isLoggedIn;
+    }
+
     playerBar.hide(); // Initialize - hide player bar
-    loadInitialView(); // Renamed from checkInitialView for clarity
 
-    // ======================= DIVIDER =======================
+    // Pre-load essential templates
+    const essentialTemplates = ['song-grid', 'song-list', 'library-grid', 'library-list', 'playlist-view'];
+    Promise.all(essentialTemplates.map(t => loadTemplate(t)))
+        .then(() => loadInitialView())
+        .catch(err => {
+            console.error('Failed to pre-load templates:', err);
+            showError('Failed to initialize application');
+        });
 
+    // ====================
     // CLICKABLE COMPONENTS
-
+    // ====================
     // Handle popular songs anchor click
     $('#homeLink').click(function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -40,7 +89,6 @@ $(document).ready(function () {
             showAuthRequiredModal();
             return;
         }
-        initializeLibrary();
         loadLibraryView();
     });
 
@@ -54,14 +102,143 @@ $(document).ready(function () {
         createNewPlaylist();
     });
 
-    // ======================= DIVIDER =======================
+    // ==================================
+    // LIBRARY ADDITIONAL FUNCTIONALITIES
+    // ==================================
+    // This gets invoked by displayLibraryContent()
+    function sortLibraryData(data, sortMethod = 'recent') {
+        // Implement your sorting logic
+        switch (sortMethod) {
+            case 'recent':
+                return [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            case 'pinned':
+                return [...data].sort((a, b) => b.is_pinned - a.is_pinned);
+            case 'name':
+                return [...data].sort((a, b) => a.name.localeCompare(b.name));
+            default:
+                return data;
+        }
+    }
 
-    // Consolidated function for popular songs
+    function togglePinItem(e) {
+        const itemElement = e.target.closest('.library-item');
+        const itemId = itemElement.dataset.id;
+
+        $.ajax({
+            url: 'library/pin',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ itemId }),
+            success: (data) => {
+                if (data.success) {
+                    itemElement.classList.toggle('pinned');
+                    e.target.classList.toggle('text-primary');
+                }
+            },
+            error: () => showError('Failed to toggle pin')
+        });
+    }
+
+    // ================
+    // TEMPLATE LOADERS
+    // ================
+    // load template for songs' layout structures (grid, list)
+    async function loadTemplate(templateName) {
+        if (!templateCache[templateName]) {
+            try {
+                const url = `templates?name=${templateName}`;
+                const response = await fetch(url);
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                const templateElement = doc.getElementById(`${templateName}-template`);
+                if (!templateElement) {
+                    throw new Error(`Template ${templateName}-template not found in response`);
+                }
+
+                templateCache[templateName] = templateElement.innerHTML;
+
+                // Add to DOM only if not already present
+                if (!document.getElementById(`${templateName}-template`)) {
+                    document.body.insertAdjacentHTML('beforeend', html);
+                }
+
+            } catch (error) {
+                console.error(`Failed to load template ${templateName}:`, error);
+                throw error;
+            }
+        }
+        return templateCache[templateName];
+    }
+
+    // =================
+    // DISPLAY FUNCTIONS
+    // =================
+    // Displays searching songs results
+    async function displayResults(results, title = '', templateName = 'song-grid') {
+        const mainContainer = $('#mainView');
+        if (results?.length > 0) {
+            await loadTemplate(templateName);
+            const source = templateCache[templateName];
+            const template = Handlebars.compile(source);
+            mainContainer.html(template({ title, songs: results }));
+        } else {
+            mainContainer.html('<div class="alert alert-warning">No results found.</div>');
+        }
+    }
+
+    // Displays Library's UI
+    async function displayLibraryContent(data, layout = 'grid', sort = 'recent') {
+
+        // Sort data
+        const sortedData = sortLibraryData(data, sort);
+
+        // Load appropriate template
+        const templateName = `library-${layout}`;
+        await loadTemplate(templateName);
+        const source = templateCache[templateName];
+        const template = Handlebars.compile(source);
+
+        mainContainer.html(template({ items: sortedData }));
+
+        // Add event listeners for pin buttons
+        document.querySelectorAll('.pin-btn').forEach(btn => {
+            btn.addEventListener('click', togglePinItem);
+        });
+    }
+
+    // ===============
+    // VIEW GENERATORS
+    // ===============
+    // Function to fetch popular songs
+    function fetchPopularSongs() {
+        $.ajax({
+            url: 'popular',
+            success: (data) => displayResults(data, 'Popular Songs', 'song-grid'), // Template is changeable(in 3rd argument)
+            error: () => showError('Error loading popular songs')
+        });
+    }
+
+    // Consolidated function for songs
     function showPopularSongs() {
         mainContainer.html('<div class="col-12 text-center">Loading popular songs...</div>');
         window.history.pushState({ view: 'popular' }, '', `${URL_ROOT}/`);
 
         fetchPopularSongs();
+    }
+
+    // Function to perform search
+    function performSearch(query) {
+        $.ajax({
+            url: 'search',
+            data: { q: query },
+            success: (data) => displayResults(data, `Results for "${query}"`, 'song-list'), // Template is changeable(in 3rd argument)
+            error: () => showError('Error loading results')
+        });
     }
 
     // Consolidated function for search
@@ -72,6 +249,33 @@ $(document).ready(function () {
         performSearch(query);
     }
 
+    // Consolidated function for Library page view
+    function loadLibraryView() {
+        mainContainer.html('<div class="col-12 text-center">Loading library...</div>');
+        window.history.pushState({ view: 'library' }, '', `${URL_ROOT}/library`);
+
+        $.ajax({
+            url: 'library',
+            success: (data) => displayLibraryContent(data),
+            error: () => showError('Error loading library')
+        });
+    }
+
+    // Consolidated function for Playlist page view
+    function loadPlaylistView(playlistId) {
+        mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
+        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist/${playlistId}`);
+
+        $.ajax({
+            url: `playlist/${playlistId}`,
+            success: (data) => displayPlaylistContent(data),
+            error: () => showError('Error loading playlist')
+        });
+    }
+
+    // ======
+    // MODALS
+    // ======
     function showAuthRequiredModal() {
         // Check if modal already exists
         if ($('#authRequiredModal').length) {
@@ -95,23 +299,9 @@ $(document).ready(function () {
         });
     }
 
-    // simple check if logged in
-    function checkAuth() {
-        return authStatus.isLoggedIn;
-    }
-
-    // Consolidated function for Playlists' page view
-    function loadPlaylistView(playlistId) {
-        mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
-        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist/${playlistId}`);
-
-        $.ajax({
-            url: `playlist/${playlistId}`,
-            success: (data) => displayPlaylistContent(data),
-            error: () => showError('Error loading playlist')
-        });
-    }
-
+    // ========================
+    // PLAYLIST FUNCTIONALITES
+    // ========================
     function createNewPlaylist() {
         $.ajax({
             url: 'playlist/create',
@@ -120,106 +310,6 @@ $(document).ready(function () {
             error: () => showError('Error creating playlist')
         });
     }
-
-    // ======================= DIVIDER =======================
-
-    // Function to fetch popular songs
-    function fetchPopularSongs() {
-        $.ajax({
-            url: 'popular',
-            success: (data) => displayResults(data, 'Popular Songs', 'song-grid'), // Template is changeable(in 3rd argument)
-            error: () => showError('Error loading popular songs')
-        });
-    }
-
-    // Function to perform search
-    function performSearch(query) {
-        $.ajax({
-            url: 'search',
-            data: { q: query },
-            success: (data) => displayResults(data, `Results for "${query}"`, 'song-list'), // Template is changeable(in 3rd argument)
-            error: () => showError('Error loading results')
-        });
-    }
-
-    // ======================= DIVIDER =======================
-
-    // LIBRARY'S MAIN JS FUNCTIONALITIES
-
-    function loadLibraryView() {
-        mainContainer.html('<div class="col-12 text-center">Loading library...</div>');
-        window.history.pushState({ view: 'library' }, '', `${URL_ROOT}/library`);
-
-        $.ajax({
-            url: 'library',
-            success: (data) => displayLibraryContent(data),
-            error: () => showError('Error loading library')
-        });
-    }
-
-    async function displayLibraryContent(data, layout = 'grid', sort = 'recent') {
-        // Sort data
-        const sortedData = sortLibraryData(data, sort);
-
-        // Load appropriate template
-        const templateName = `library-${layout}`;
-        await loadTemplate(templateName);
-        const source = templateCache[templateName];
-        const template = Handlebars.compile(source);
-
-        // Register helper for item_type comparison
-        Handlebars.registerHelper('eq', function (a, b, options) {
-            return a === b ? options.fn(this) : options.inverse(this);
-        });
-
-        mainContainer.html(template({ items: sortedData }));
-    }
-
-    // ======================= DIVIDER =======================
-
-    // load template for songs' layout structures (grid, list)
-    async function loadTemplate(templateName) {
-        if (!templateCache[templateName]) {
-            try {
-                const url = `templates?name=${templateName}`;
-                const response = await fetch(url);
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-                const html = await response.text();
-                document.body.insertAdjacentHTML('beforeend', html);
-
-                const templateElement = document.getElementById(`${templateName}-template`);
-                if (!templateElement) throw new Error(`Template ${templateName}-template not found in response`);
-
-                templateCache[templateName] = templateElement.innerHTML;
-
-            } catch (error) {
-                console.error('Failed to load template:', error);
-                throw error; // Re-throw to handle in displayResults()
-            }
-        }
-        return templateCache[templateName];
-    }
-
-    // Function to display searching songs results
-    async function displayResults(results, title = '', templateName = 'song-grid') {
-        const mainContainer = $('#mainView');
-        if (results?.length > 0) {
-            await loadTemplate(templateName);
-            const source = templateCache[templateName];
-            const template = Handlebars.compile(source);
-            mainContainer.html(template({ title, songs: results }));
-        } else {
-            mainContainer.html('<div class="alert alert-warning">No results found.</div>');
-        }
-    }
-
-    // MAKE another displayResults but for Library and Playlist
-
-    // ======================= DIVIDER =======================
-
-    // PLAYLISTS FUNCTIONALITES
 
     function updatePlaylistName(playlistId, newName) {
         $.ajax({
@@ -241,6 +331,7 @@ $(document).ready(function () {
         });
     }
 
+    // User can upload their own playlist image/profile from local storage
     function handleImageUpload(e) {
         const file = e.target.files[0];
         const playlistId = $('#playlistContainer').data('id');
@@ -269,7 +360,6 @@ $(document).ready(function () {
         });
     }
 
-    // Add this helper function if not already present
     function showToast(message) {
         // Implement a simple toast notification
         const toast = $(`<div class="toast">${message}</div>`);
@@ -292,64 +382,6 @@ $(document).ready(function () {
         // Setup image upload
         $('#playlistImageUpload').on('change', handleImageUpload);
     }
-
-    // ======================= DIVIDER =======================
-
-    // FOR LIBRARY AND PLAYLIST INTERACTIONS:
-
-    async function fetchLibraryContent() {
-        try {
-            const response = await fetch('library');
-            if (response.status === 401) {
-                showAuthRequiredModal();
-                return null;
-            }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching library:', error);
-            showError('Failed to load library');
-            return null;
-        }
-    }
-
-    async function initializeLibrary() {
-        const libraryData = await fetchLibraryContent();
-        if (libraryData) {
-            renderLibrary(libraryData);
-        }
-    }
-
-    function renderLibrary(data, layout = 'grid') {
-        const templateId = `library-${layout}-template`;
-        const template = Handlebars.compile(document.getElementById(templateId).innerHTML);
-        document.getElementById('mainView').innerHTML = template({ items: data });
-
-        // Add event listeners for new elements
-        document.querySelectorAll('.pin-btn').forEach(btn => {
-            btn.addEventListener('click', togglePinItem);
-        });
-    }
-
-    function togglePinItem(e) {
-        const itemElement = e.target.closest('.library-item');
-        const itemId = itemElement.dataset.id;
-
-        fetch('library/pin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ itemId })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    itemElement.classList.toggle('pinned');
-                    e.target.classList.toggle('text-primary');
-                }
-            });
-    }
-
 
     // ======================= DIVIDER =======================
 
