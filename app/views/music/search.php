@@ -1,10 +1,15 @@
-<div class="container">
-    <!-- Results container -->
-    <div class="row mt-3" id="searchResults">
-        <?php if (!$data['search_performed']): ?>
-            <div class="col-12 text-center text-muted">
-                Type in the search bar to find music
-            </div>
-        <?php endif; ?>
-    </div>
+<div id="search-container">
+    <ul class="list-group">
+        <?php foreach ($songs ?? [] as $song): ?>
+            <li class="list-group-item">
+                <div class="d-flex">
+                    <img src="<?= $song['image'] ?>" width="60" height="60" class="me-3">
+                    <div>
+                        <h5><?= $song['name'] ?></h5>
+                        <p class="mb-0"><?= $song['artist_name'] ?></p>
+                    </div>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 </div>

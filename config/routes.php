@@ -1,18 +1,8 @@
 <?php
 // Define routes
 $routes = [
-    '' => [
-        'controller' => 'HomeController',
-        'action' => 'index'
-    ],
-    'home' => [
-        'controller' => 'HomeController',
-        'action' => 'index'
-    ],
-    'main' => [
-        'controller' => 'HomeController',
-        'action'=> 'main'
-    ],
+
+    // AUTH 
     'auth/register' => [
         'controller' => 'AuthController',
         'action' => 'register'
@@ -25,18 +15,92 @@ $routes = [
         'controller' => 'AuthController',
         'action' => 'logout'
     ],
-    'search' => [
-        'controller' => 'MusicController',
-        'action' => 'searchView'
+    'partials/authModal' => [
+        'controller' => 'AuthController',
+        'action' => 'authModal'
     ],
-    'music/searchResults' => [
+
+    // MAIN PAGES
+    'main' => [ // route for page viewing
         'controller' => 'MusicController',
-        'action' => 'searchResults'
+        'action' => 'loadView'
     ],
+    'search' => [ // route for search results page
+        'controller' => 'MusicController',
+        'action' => 'getSearchedSongs'
+    ],
+    'popular' => [ // route for home page
+        'controller' => 'MusicController',
+        'action' => 'getPopularSongs'
+    ],
+
+    // LIBRARY
+    'library' => [
+        'controller' => 'LibraryController',
+        'action' => 'index'
+    ],
+    'library/add' => [
+        'controller' => 'LibraryController',
+        'action' => 'add'
+    ],
+    'library/remove' => [
+        'controller' => 'LibraryController',
+        'action' => 'remove'
+    ],
+    'library/pin' => [
+        'controller' => 'LibraryController',
+        'action' => 'pin'
+    ],
+
+    // PLAYLIST
+    /**
+     *   How my playlist flow works:
+     * 
+     *   1) user clicks on plus button "create playlist"
+     * 
+     *   2) the playlist/create route gets used to create a playlist and to return user's ID 
+     *   through javascript's event listener
+     * 
+     *   3) PlaylistController invokes create() method
+     * 
+     *   4) create() method passes the data to javascript's loadPlaylistView function
+     * 
+     *   5) loadPlaylistView function invokes the `playlist/${playlistId}`
+     * 
+     *   6) this `playlist/${playlistId}` route would show the playlist-view template
+     */
+    'create' => [
+        'controller' => 'PlaylistController',
+        'action' => 'create'
+    ],
+    'playlist' => [
+        'controller' => 'PlaylistController',
+        'action' => 'show'
+    ],
+    'playlist/add-song' => [
+        'controller' => 'PlaylistController',
+        'action' => 'addSong'
+    ],
+    'playlist/remove-song' => [
+        'controller' => 'PlaylistController',
+        'action' => 'removeSong'
+    ],
+    'playlist/update' => [
+        'controller' => 'PlaylistController',
+        'action' => 'update'
+    ],
+
+    // DEBBUGGING
     'debbug' => [
         'controller' => 'HomeController',
         'action' => 'index'
-    ]
+    ],
+
+    // TEMPLATES
+    'templates' => [
+        'controller' => 'MusicController',
+        'action' => 'loadTemplate'
+    ],
 ];
 
 // Helper functions

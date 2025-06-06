@@ -1,4 +1,4 @@
-<!-- PLAYERBAR 2.0 -->
+<!-- PLAYERBAR (HIDDEN BY DEFAULT) -->
 <div class="player-bar" id="playerBar">
     <div class="container">
         <div class="row align-items-center">

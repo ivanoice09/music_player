@@ -104,6 +104,7 @@ class AuthController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Init data with proper sanitization
             $data = [
+                'is_music_page' => false,
                 'username' => $this->sanitizeInput($_POST['username'] ?? ''),
                 'password' => trim($_POST['password'] ?? ''),
                 'username_err' => '',
@@ -165,7 +166,7 @@ class AuthController extends BaseController
         $_SESSION['user_id'] = $user->id;
         $_SESSION['username'] = $this->sanitizeOutput($user->username);
         $_SESSION['email'] = $this->sanitizeOutput($user->email);
-        redirect('home');
+        redirect('main');
     }
 
     public function logout()
@@ -204,5 +205,11 @@ class AuthController extends BaseController
     private function sanitizeOutput($data)
     {
         return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    }
+
+    public function authModal()
+    {
+        require_once APP_ROOT . '/app/views/partials/authModal.php';
+        exit;
     }
 }

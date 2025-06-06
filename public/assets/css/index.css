@@ -1,22 +1,21 @@
-body {
+/* Default Layout (Auth Pages) */
+body.default-layout {
     background-color: #f8f9fa;
 }
 
-/* Song Cards */
-.song-card .card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    margin-bottom: 20px;
+/* Music Layout */
+body.music-layout {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    margin-left: 5%;
+    padding-top: 80px;
 }
 
-.song-card .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.song-card .card-img-top {
-    height: 160px;
-    object-fit: cover;
+/* Only apply dark cards in music layout */
+body.music-layout .card,
+body.music-layout .list-group-item {
+    background-color: #1e1e1e;
+    border-color: #333;
 }
 
 /* Flash messages */
@@ -38,21 +37,49 @@ body {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
 
-    to {
-        opacity: 0;
-    }
+/* Add Smooth Transitions: */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styling (for modern browsers) */
+::-webkit-scrollbar {
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+}
+
+/* Popover menu */
+.popover-profile-menu {
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.popover-profile-menu .dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+}
+
+.popover-profile-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.popover-profile-menu .bi {
+    margin-right: 0.5rem;
 }
