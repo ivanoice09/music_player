@@ -22,6 +22,12 @@ class User
         $this->db->bind(':password', $data['password']);
 
         if ($this->db->execute()) {
+            // Get the new user's ID
+            $userId = $this->db->lastInsertId();
+
+            // Create default playlist
+            $this->createDefaultPlaylist($userId);
+
             return true;
         } else {
             return false;
@@ -81,21 +87,27 @@ class User
     public function getLibrary($userId)
     {
         $stmt = $this->db->prepare("
-        SELECT li.*, 
-            CASE 
-                WHEN li.item_type = 'playlist' THEN p.name
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(li.metadata, '$.name'))
-            END as name,
-            CASE 
-                WHEN li.item_type = 'playlist' THEN p.image_url
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(li.metadata, '$.image'))
-            END as image,
-            p.id as playlist_id
-        FROM library_items li
-        LEFT JOIN playlists p ON li.item_type = 'playlist' AND li.item_id = p.id
-        WHERE li.user_id = ?
-        ORDER BY li.is_pinned DESC, li.created_at DESC
-    ");
+            SELECT 
+                li.id,
+                li.item_type,
+                li.item_id,
+                li.metadata,
+                li.is_pinned,
+                li.created_at,
+                CASE 
+                    WHEN li.item_type = 'playlist' THEN p.name
+                    ELSE JSON_UNQUOTE(JSON_EXTRACT(li.metadata, '$.name'))
+                END as name,
+                CASE 
+                    WHEN li.item_type = 'playlist' THEN p.image_url
+                    ELSE JSON_UNQUOTE(JSON_EXTRACT(li.metadata, '$.image'))
+                END as image,
+                p.is_default
+            FROM library_items li
+            LEFT JOIN playlists p ON li.item_type = 'playlist' AND li.item_id = p.id
+            WHERE li.user_id = ?
+            ORDER BY li.is_pinned DESC, li.created_at DESC
+        ");
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -151,7 +163,64 @@ class User
     //=======================
     // PLAYLIST FUNCTIONALITY
     //=======================
-    
+    // helper function: check if default playlist already exists
+    public function hasDefaultPlaylist($userId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT id FROM playlists 
+            WHERE user_id = ? AND is_default = 1
+            LIMIT 1
+        ");
+        $stmt->execute([$userId]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : false;
+    }
+
+    // creates the default playlist once the user registers in the application
+    public function createDefaultPlaylist($userId)
+    {
+
+        // Check if default playlist already exists
+        if ($this->hasDefaultPlaylist($userId)) {
+            return false;
+        }
+
+        // Create default playlist
+        $playlistData = [
+            'name' => 'Favorites',
+            'image_url' => URL_ROOT . '/assets/images/favourite-playlist-512px.png',
+            'description' => 'Your favorite tracks',
+            'is_default' => 1
+        ];
+
+        $stmt = $this->db->prepare("
+            INSERT INTO playlists 
+            (user_id, name, image_url, description, is_default) 
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+        $stmt->execute([
+            $userId,
+            $playlistData['name'],
+            $playlistData['image_url'],
+            $playlistData['description'],
+            1 // is_default
+        ]);
+
+        $playlistId = $this->db->lastInsertId();
+
+        // Add to library
+        $this->addToLibrary($userId, 'playlist', $playlistId, [
+            'name' => $playlistData['name'],
+            'image' => $playlistData['image_url'],
+            'is_default' => true,
+            'is_pinned' => true
+        ]);
+
+        return $playlistId;
+    }
+
     public function getUserPlaylistCount($userId)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM playlists WHERE user_id = ?");

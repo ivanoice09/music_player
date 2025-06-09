@@ -1,12 +1,10 @@
 <?php
 class LibraryController extends BaseController
 {
-    private $musicModel;
     private $userModel;
 
     public function __construct()
     {
-        $this->musicModel = new Music();
         $this->userModel = new User();
     }
 
@@ -20,12 +18,16 @@ class LibraryController extends BaseController
         }
 
         try {
-            $libraryItems = $this->userModel->getLibrary($_SESSION['user_id']);
-
-            // For initial testing, seed with Jamendo content if empty
-            if (empty($libraryItems)) {
-                // $libraryItems = $this->seedInitialLibrary($_SESSION['user_id']);
+            // Ensure default playlist exists
+            if (!$this->userModel->hasDefaultPlaylist($_SESSION['user_id'])) {
+                $created = $this->userModel->createDefaultPlaylist($_SESSION['user_id']);
+                if (!$created) {
+                    error_log("Failed to create default playlist for user: " . $_SESSION['user_id']);
+                }
             }
+
+            $libraryItems = $this->userModel->getLibrary($_SESSION['user_id']);
+            error_log(print_r($libraryItems, true)); // Log the retrieved items
 
             header('Content-Type: application/json');
             echo json_encode($libraryItems);

@@ -37,11 +37,17 @@ class PlaylistController extends BaseController
         $playlistCount = $this->userModel->getUserPlaylistCount($_SESSION['user_id']);
         $newPlaylist = [
             'name' => 'MyPlaylist' . ($playlistCount + 1),
-            'image_url' => URL_ROOT . '/assets/images/playlist/default-playlist-512px.png',
+            'image_url' => URL_ROOT . '/assets/images/default-playlist-512px.png',
             'description' => ''
         ];
 
         $playlistId = $this->userModel->createPlaylist($_SESSION['user_id'], $newPlaylist);
+
+        // Add to library
+        $this->userModel->addToLibrary($_SESSION['user_id'], 'playlist', $playlistId, [
+            'name' => $newPlaylist['name'],
+            'image_url' => $newPlaylist['image_url']
+        ]);
 
         // Return full playlist structure including empty songs array
         header('Content-Type: application/json');
@@ -55,7 +61,9 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    // ... other methods (addSong, removeSong, update)
+    //======================
+    //  PLAYLIST MODIFIERS  
+    //======================
     public function addSong()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -70,6 +78,13 @@ class PlaylistController extends BaseController
         if (!$playlistId || !$songId) {
             header('HTTP/1.0 400 Bad Request');
             echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
+            exit;
+        }
+
+        // Check if this is a default playlist
+        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+            header('HTTP/1.0 403 Forbidden');
+            echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
             exit;
         }
 
@@ -99,6 +114,13 @@ class PlaylistController extends BaseController
             exit;
         }
 
+        // Check if this is a default playlist
+        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+            header('HTTP/1.0 403 Forbidden');
+            echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
+            exit;
+        }
+
         $success = $this->userModel->removeSongFromPlaylist($_SESSION['user_id'], $playlistId, $songId);
 
         echo json_encode([
@@ -121,6 +143,13 @@ class PlaylistController extends BaseController
         if (!$playlistId) {
             header('HTTP/1.0 400 Bad Request');
             echo json_encode(['success' => false, 'message' => 'Missing playlist ID']);
+            exit;
+        }
+
+        // Check if this is a default playlist
+        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+            header('HTTP/1.0 403 Forbidden');
+            echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
             exit;
         }
 
