@@ -195,25 +195,6 @@ $(document).ready(function () {
         }
     }
 
-    // function togglePinItem(e) {
-    //     const itemElement = e.target.closest('.library-item');
-    //     const itemId = itemElement.dataset.id;
-
-    //     $.ajax({
-    //         url: 'library/pin',
-    //         method: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({ itemId }),
-    //         success: (data) => {
-    //             if (data.success) {
-    //                 itemElement.classList.toggle('pinned');
-    //                 e.target.classList.toggle('text-primary');
-    //             }
-    //         },
-    //         error: () => showError('Failed to toggle pin')
-    //     });
-    // }
-
     // ================
     // TEMPLATE LOADERS
     // ================

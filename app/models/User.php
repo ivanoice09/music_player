@@ -10,6 +10,9 @@ class User
         $this->musicModel = new Music();
     }
 
+    //=========================
+    // AUTHENTICATION FUNCTIONS
+    //=========================
     // Register user
     public function register($data)
     {

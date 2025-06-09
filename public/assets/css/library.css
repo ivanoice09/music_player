@@ -1,17 +1,3 @@
-/* Set text color to white for library items */
-.library-item,
-.library-item .card-title,
-.library-item .card-text,
-.library-item h5,
-.library-item .text-muted {
-    color: white !important;
-}
-
-/* Override Bootstrap's text-muted color specifically */
-.library-item .text-muted {
-    color: rgba(255, 255, 255, 0.7) !important;
-}
-
 /* Library item hover effects */
 .library-item {
     cursor: pointer;
