@@ -35,9 +35,9 @@
           {{else}}
             <img src="{{image}}" width="60" height="60" class="me-3 rounded">
           {{/if}}
-          <div class="flex-grow-1">
+          <div class="flex-grow-1" style="color: white;">
             <h5>{{name}}</h5>
-            <p class="mb-0 text-muted">{{item_type}}</p>
+            <p class="mb-0">{{item_type}}</p>
           </div>
           <button class="btn btn-sm btn-outline-secondary pin-btn">
             <i class="fas fa-thumbtack"></i>

@@ -73,10 +73,10 @@ class User
     //======================
     // LIBRARY FUNCTIONALITY
     //======================
+
     // Add these methods to your User model
     public function getLibrary($userId)
     {
-        // For MySQL/MariaDB versions that support JSON functions
         $stmt = $this->db->prepare("
         SELECT li.*, 
             CASE 
@@ -86,7 +86,8 @@ class User
             CASE 
                 WHEN li.item_type = 'playlist' THEN p.image_url
                 ELSE JSON_UNQUOTE(JSON_EXTRACT(li.metadata, '$.image'))
-            END as image
+            END as image,
+            p.id as playlist_id
         FROM library_items li
         LEFT JOIN playlists p ON li.item_type = 'playlist' AND li.item_id = p.id
         WHERE li.user_id = ?
@@ -147,6 +148,7 @@ class User
     //=======================
     // PLAYLIST FUNCTIONALITY
     //=======================
+    
     public function getUserPlaylistCount($userId)
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM playlists WHERE user_id = ?");
@@ -279,5 +281,74 @@ class User
             $data['description'] ?? null,
             $playlistId
         ]);
+    }
+
+    //=====================
+    // ARTIST FUNCTIONALITY
+    //=====================
+    public function getArtist($userId, $artistId)
+    {
+        // First verify the artist exists in user's library
+        $stmt = $this->db->prepare("
+        SELECT * FROM library_items 
+        WHERE user_id = ? AND item_type = 'artist' AND item_id = ?
+    ");
+        $stmt->execute([$userId, $artistId]);
+
+        if ($stmt->rowCount() === 0) {
+            return null;
+        }
+
+        // Get artist info from Jamendo
+        $artist = $this->musicModel->getArtist($artistId);
+
+        if (!$artist) {
+            return null;
+        }
+
+        // Get artist's popular songs
+        $songs = $this->musicModel->getArtistTracks($artistId, 20); // Limit to 20 songs
+
+        return [
+            'id' => $artist['id'],
+            'name' => $artist['name'],
+            'image' => $artist['image'],
+            'songs' => $songs['results'] ?? []
+        ];
+    }
+
+    //====================
+    // ALBUM FUNCTIONALITY
+    //====================
+    public function getAlbum($userId, $albumId)
+    {
+        // First verify the album exists in user's library
+        $stmt = $this->db->prepare("
+        SELECT * FROM library_items 
+        WHERE user_id = ? AND item_type = 'album' AND item_id = ?
+    ");
+        $stmt->execute([$userId, $albumId]);
+
+        if ($stmt->rowCount() === 0) {
+            return null;
+        }
+
+        // Get album info from Jamendo
+        $album = $this->musicModel->getAlbum($albumId);
+
+        if (!$album) {
+            return null;
+        }
+
+        // Get album tracks
+        $songs = $this->musicModel->getAlbumTracks($albumId);
+
+        return [
+            'id' => $album['id'],
+            'name' => $album['name'],
+            'image' => $album['image'],
+            'artist_name' => $album['artist_name'],
+            'songs' => $songs['results'] ?? []
+        ];
     }
 }

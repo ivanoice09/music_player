@@ -26,7 +26,7 @@
 
   <div class="row">
     {{#each items}}
-      <div class="col-md-3 col-sm-6 mb-4">
+      <div class="col-md-3 col-sm-6 mb-4" style="color: white;">
         <div class="card h-100 library-item {{#if is_pinned}}pinned{{/if}}" 
              data-id="{{id}}" 
              data-type="{{item_type}}">

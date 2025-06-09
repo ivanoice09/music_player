@@ -20,6 +20,10 @@ class Music
         return json_decode($result, true);
     }
 
+    //============
+    // CALL TRACKS
+    //============
+
     // Get popular tracks
     public function getPopularTracks($limit = 10)
     {
@@ -57,6 +61,30 @@ class Music
         return $result;
     }
 
+    //=============
+    // CALL ARTISTS
+    //=============
+
+    public function getArtist($artistId)
+    {
+        $url = "https://api.jamendo.com/v3.0/artists/?client_id={$this->clientId}&id={$artistId}&format=json";
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        if (isset($data['results'][0])) {
+            return $data['results'][0];
+        }
+
+        return null;
+    }
+
+    public function getArtistTracks($artistId, $limit = 20)
+    {
+        $url = "https://api.jamendo.com/v3.0/tracks/?client_id={$this->clientId}&artist_id={$artistId}&limit={$limit}&format=json";
+        $response = file_get_contents($url);
+        return json_decode($response, true);
+    }
+
     public function getPopularArtists($limit = 3)
     {
         $url = JAMENDO_BASE_URL . '/artists/?client_id=' . $this->clientId .
@@ -70,6 +98,38 @@ class Music
                 'image' => $artist['image'] ?? 'default-artist.jpg'
             ];
         }, $result['results'] ?? []);
+    }
+
+    //============
+    // CALL ALBUMS
+    //============
+
+    public function getAlbum($albumId)
+    {
+        $url = "https://api.jamendo.com/v3.0/albums/?client_id={$this->clientId}&id={$albumId}&format=json";
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        if (isset($data['results'][0])) {
+            return $data['results'][0];
+        }
+
+        return null;
+    }
+
+    public function getAlbumTracks($albumId)
+    {
+        $url = "https://api.jamendo.com/v3.0/tracks/?client_id={$this->clientId}&album_id={$albumId}&format=json";
+        $response = file_get_contents($url);
+        return json_decode($response, true);
+    }
+
+    public function getArtistAlbums($artistId)
+    {
+        $url = JAMENDO_BASE_URL . '/albums/?client_id=' . $this->clientId .
+            '&format=jsonpretty&artist_id=' . $artistId;
+
+        return $this->callApi($url);
     }
 
     public function getPopularAlbums($limit = 3)
@@ -86,13 +146,5 @@ class Music
                 'artist_name' => $album['artist_name']
             ];
         }, $result['results'] ?? []);
-    }
-
-    public function getArtistAlbums($artistId)
-    {
-        $url = JAMENDO_BASE_URL . '/albums/?client_id=' . $this->clientId .
-            '&format=jsonpretty&artist_id=' . $artistId;
-
-        return $this->callApi($url);
     }
 }

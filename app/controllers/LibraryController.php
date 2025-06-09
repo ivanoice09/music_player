@@ -50,7 +50,7 @@ class LibraryController extends BaseController
                 [
                     'id' => 'default-1',
                     'name' => 'Favorites',
-                    'image' => URL_ROOT . '/assets/images/default-playlist.png',
+                    'image' => URL_ROOT . '/assets/images/playlist/favourite-playlist-512px.png',
                     'is_default' => true,
                     'is_pinned' => true
                 ]

@@ -1,7 +1,9 @@
 $(document).ready(function () {
+
     // ========================
     // HANDLEBARS CONFIGURATION
     // ========================
+
     // Equality helper
     Handlebars.registerHelper('eq', function (a, b, options) {
         // When used as inline helper (no options parameter)
@@ -27,6 +29,7 @@ $(document).ready(function () {
     // ==============
     // ERROR HANDLERS
     // ==============
+
     function showError(message, duration = 3000) {
         const errorElement = $(`<div class="alert alert-danger">${message}</div>`);
         $('#mainView').prepend(errorElement);
@@ -36,9 +39,13 @@ $(document).ready(function () {
     // =================
     // APPLICATION SETUP
     // =================
+
     const playerBar = $('#playerBar');
     const mainContainer = $('#mainView'); // Consistent container reference
     const templateCache = {};
+    let activePlaylistRequest = null;
+    const DEFAULT_LIBRARY_LAYOUT = 'grid';
+    const DEFAULT_LIBRARY_SORT = 'recent';
     let debounceTimer;
 
     // simple check if logged in
@@ -49,7 +56,16 @@ $(document).ready(function () {
     playerBar.hide(); // Initialize - hide player bar
 
     // Pre-load essential templates
-    const essentialTemplates = ['song-grid', 'song-list', 'library-grid', 'library-list', 'playlist-view'];
+    const essentialTemplates = [
+        'song-grid',
+        'song-list',
+        'library-grid',
+        'library-list',
+        'playlist-view',
+        'artist-view',
+        'album-view'
+    ];
+
     Promise.all(essentialTemplates.map(t => loadTemplate(t)))
         .then(() => loadInitialView())
         .catch(err => {
@@ -60,6 +76,7 @@ $(document).ready(function () {
     // ====================
     // CLICKABLE COMPONENTS
     // ====================
+
     // Handle popular songs anchor click
     $('#homeLink').click(function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -82,7 +99,6 @@ $(document).ready(function () {
     });
 
     // Initialize when library link is clicked
-    // Add event listener for library nav link
     $('#library-link').on('click', function (e) {
         e.preventDefault();
         if (!checkAuth()) {
@@ -105,43 +121,103 @@ $(document).ready(function () {
     // ==================================
     // LIBRARY ADDITIONAL FUNCTIONALITIES
     // ==================================
+
     // This gets invoked by displayLibraryContent()
     function sortLibraryData(data, sortMethod = 'recent') {
+
+        // soft copy of array
+        const sortedData = [...data];
+
+        // Helper function for safe comparison
+        const safeCompare = (a, b) => {
+            a = a || ''; // Convert null/undefined to empty string
+            b = b || '';
+            return a.localeCompare(b);
+        };
+
         // Implement your sorting logic
         switch (sortMethod) {
             case 'recent':
-                return [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                return sortedData.sort((a, b) => {
+                    const dateA = new Date(a.created_at || 0);
+                    const dateB = new Date(b.created_at || 0);
+                    return dateB - dateA;
+                });
+
             case 'pinned':
-                return [...data].sort((a, b) => b.is_pinned - a.is_pinned);
-            case 'name':
-                return [...data].sort((a, b) => a.name.localeCompare(b.name));
+                return sortedData.sort((a, b) => {
+                    // Pinned items first, then by recent
+                    if (a.is_pinned !== b.is_pinned) {
+                        return b.is_pinned - a.is_pinned;
+                    }
+                    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+                });
+
+            case 'artist':
+                return sortedData.sort((a, b) => {
+                    // Handle artist comparison
+                    let aArtist, bArtist;
+
+                    if (a.item_type === 'artist') {
+                        aArtist = a.name;
+                    } else if (a.item_type === 'playlist') {
+                        aArtist = ''; // Playlists have no artist
+                    } else {
+                        try {
+                            const metadata = JSON.parse(a.metadata || '{}');
+                            aArtist = metadata.artist || '';
+                        } catch {
+                            aArtist = '';
+                        }
+                    }
+
+                    if (b.item_type === 'artist') {
+                        bArtist = b.name;
+                    } else if (b.item_type === 'playlist') {
+                        bArtist = '';
+                    } else {
+                        try {
+                            const metadata = JSON.parse(b.metadata || '{}');
+                            bArtist = metadata.artist || '';
+                        } catch {
+                            bArtist = '';
+                        }
+                    }
+
+                    return safeCompare(aArtist, bArtist);
+                });
+
+            case 'alpha':
+                return sortedData.sort((a, b) => safeCompare(a.name, b.name));
+
             default:
-                return data;
+                return sortedData;
         }
     }
 
-    function togglePinItem(e) {
-        const itemElement = e.target.closest('.library-item');
-        const itemId = itemElement.dataset.id;
+    // function togglePinItem(e) {
+    //     const itemElement = e.target.closest('.library-item');
+    //     const itemId = itemElement.dataset.id;
 
-        $.ajax({
-            url: 'library/pin',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ itemId }),
-            success: (data) => {
-                if (data.success) {
-                    itemElement.classList.toggle('pinned');
-                    e.target.classList.toggle('text-primary');
-                }
-            },
-            error: () => showError('Failed to toggle pin')
-        });
-    }
+    //     $.ajax({
+    //         url: 'library/pin',
+    //         method: 'POST',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify({ itemId }),
+    //         success: (data) => {
+    //             if (data.success) {
+    //                 itemElement.classList.toggle('pinned');
+    //                 e.target.classList.toggle('text-primary');
+    //             }
+    //         },
+    //         error: () => showError('Failed to toggle pin')
+    //     });
+    // }
 
     // ================
     // TEMPLATE LOADERS
     // ================
+
     // load template for songs' layout structures (grid, list)
     async function loadTemplate(templateName) {
         if (!templateCache[templateName]) {
@@ -178,6 +254,7 @@ $(document).ready(function () {
     // =================
     // DISPLAY FUNCTIONS
     // =================
+
     // Displays searching songs results
     async function displayResults(results, title = '', templateName = 'song-grid') {
         const mainContainer = $('#mainView');
@@ -192,7 +269,16 @@ $(document).ready(function () {
     }
 
     // Displays Library's UI
-    async function displayLibraryContent(data, layout = 'grid', sort = 'recent') {
+    async function displayLibraryContent(data, layout, sort) {
+
+        // Get user preferences or use defaults
+        const userLayoutPreference = localStorage.getItem('libraryLayoutPreference') || DEFAULT_LIBRARY_LAYOUT;
+        const userSortPreference = localStorage.getItem('librarySortPreference') || DEFAULT_LIBRARY_SORT;
+
+        // Use provided values or fall back to preferences
+        layout = layout || userLayoutPreference;
+        sort = sort || userSortPreference;
+
         // Sort data
         const sortedData = sortLibraryData(data, sort);
 
@@ -204,10 +290,9 @@ $(document).ready(function () {
 
         mainContainer.html(template({ items: sortedData }));
 
-        // Add event listeners for pin buttons
-        document.querySelectorAll('.pin-btn').forEach(btn => {
-            btn.addEventListener('click', togglePinItem);
-        });
+        // Update active layout/sort buttons
+        $(`.layout-option[data-layout="${layout}"]`).addClass('active');
+        $(`.sort-option[data-sort="${sort}"]`).addClass('active');
     }
 
     // Displays Playlist's UI
@@ -251,9 +336,64 @@ $(document).ready(function () {
         }
     }
 
+    // Display Artist View
+    async function displayArtistContent(data) {
+        try {
+            const templateName = 'artist-view';
+            await loadTemplate(templateName);
+
+            const source = templateCache[templateName];
+            const template = Handlebars.compile(source);
+
+            const viewData = {
+                artist: {
+                    id: data.id,
+                    name: data.name,
+                    image: data.image,
+                    songs: data.songs || []
+                }
+            };
+
+            mainContainer.html(template(viewData));
+
+        } catch (error) {
+            console.error('Error displaying artist:', error);
+            showError('Failed to load artist view');
+        }
+    }
+
+    // Display Album View
+    async function displayAlbumContent(data) {
+        try {
+            const templateName = 'album-view';
+            await loadTemplate(templateName);
+
+            const source = templateCache[templateName];
+            const template = Handlebars.compile(source);
+
+            const viewData = {
+                album: {
+                    id: data.id,
+                    name: data.name,
+                    image: data.image,
+                    artist_name: data.artist_name,
+                    songs: data.songs || []
+                }
+            };
+
+            mainContainer.html(template(viewData));
+
+        } catch (error) {
+            console.error('Error displaying album:', error);
+            showError('Failed to load album view');
+        }
+    }
+
+
     // ===============
     // VIEW GENERATORS
     // ===============
+
     // Function to fetch popular songs
     function fetchPopularSongs() {
         $.ajax({
@@ -303,8 +443,6 @@ $(document).ready(function () {
             error: () => showError('Error loading library')
         });
     }
-
-    let activePlaylistRequest = null;
 
     // Consolidated function for Playlist page view
     function loadPlaylistView(playlistId) {
@@ -359,9 +497,75 @@ $(document).ready(function () {
         });
     }
 
-    // ======
-    // MODALS
-    // ======
+    // Consolidated function for Artist page view
+    function loadArtistView(artistId) {
+        if (!artistId) {
+            showError('Invalid artist ID');
+            return;
+        }
+
+        const url = `${URL_ROOT}/artist/${artistId}`;
+        mainContainer.html('<div class="col-12 text-center">Loading artist...</div>');
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: (data) => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    window.history.pushState(
+                        { view: 'artist', artistId },
+                        '',
+                        `${URL_ROOT}/artist/${artistId}`
+                    );
+                    displayArtistContent(data);
+                }
+            },
+            error: (xhr) => {
+                const errorMsg = xhr.responseJSON?.error || 'Error loading artist';
+                showError(`${errorMsg} (Status: ${xhr.status})`);
+            }
+        });
+    }
+
+    // Consolidated function for Album page view
+    function loadAlbumView(albumId) {
+        if (!albumId) {
+            showError('Invalid album ID');
+            return;
+        }
+
+        const url = `${URL_ROOT}/album/${albumId}`;
+        mainContainer.html('<div class="col-12 text-center">Loading album...</div>');
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: (data) => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    window.history.pushState(
+                        { view: 'album', albumId },
+                        '',
+                        `${URL_ROOT}/album/${albumId}`
+                    );
+                    displayAlbumContent(data);
+                }
+            },
+            error: (xhr) => {
+                const errorMsg = xhr.responseJSON?.error || 'Error loading album';
+                showError(`${errorMsg} (Status: ${xhr.status})`);
+            }
+        });
+    }
+
+
+    // ================= 
+    //      MODALS
+    // =================
+
     function showAuthRequiredModal() {
         // Check if modal already exists
         if ($('#authRequiredModal').length) {
@@ -385,9 +589,10 @@ $(document).ready(function () {
         });
     }
 
-    // ========================
+    // =======================
     // PLAYLIST FUNCTIONALITES
-    // ========================
+    // =======================
+
     function createNewPlaylist() {
         $.ajax({
             url: 'playlist/create',
@@ -457,7 +662,9 @@ $(document).ready(function () {
         setTimeout(() => toast.remove(), 3000);
     }
 
-    // ======================= DIVIDER =======================
+    //============================
+    // INITIALIZE THE INITIAL VIEW
+    //============================
 
     // Check URL on page load for popular songs request
     function loadInitialView() {
@@ -470,13 +677,36 @@ $(document).ready(function () {
         }
     }
 
+    //=========
+    // POPSTATE
+    //=========
+
     window.addEventListener('popstate', (event) => {
         if (event.state?.view === 'search') {
             performSearch(event.state.query);
+        } else if (event.state?.view === 'artist') {
+            loadArtistView(event.state.artistId);
+        } else if (event.state?.view === 'album') {
+            loadAlbumView(event.state.albumId);
+        } else if (event.state?.view === 'playlist') {
+            loadPlaylistView(event.state.playlistId);
         } else {
             showPopularSongs();
         }
     });
+
+    //========================
+    // GLOBAL SCOPE EXPOSITION
+    //========================
+
+    window.LibraryFunctions = {
+        loadLibraryView,
+        loadPlaylistView,
+        loadArtistView,
+        loadAlbumView,
+        showError,
+        showToast
+    };
 
 });
 
