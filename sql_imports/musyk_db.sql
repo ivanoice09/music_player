@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 09, 2025 alle 09:33
+-- Creato il: Giu 09, 2025 alle 17:56
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -42,13 +42,12 @@ CREATE TABLE `library_items` (
 --
 
 INSERT INTO `library_items` (`id`, `user_id`, `item_type`, `item_id`, `is_pinned`, `created_at`, `metadata`) VALUES
-(1, 1, 'artist', '593864', 1, '2025-06-05 14:26:14', '{\"name\":\"Praz Khanal\",\"image\":\"https:\\/\\/usercontent.jamendo.com?type=artist&id=593864&width=300\"}'),
-(2, 1, 'artist', '596766', 0, '2025-06-05 14:26:14', '{\"name\":\"Doc Hartley\",\"image\":\"\"}'),
-(3, 1, 'artist', '595393', 0, '2025-06-05 14:26:14', '{\"name\":\"Lowtone Music\",\"image\":\"https:\\/\\/usercontent.jamendo.com?type=artist&id=595393&width=300\"}'),
-(4, 1, 'album', '570554', 1, '2025-06-05 14:26:14', '{\"name\":\"Be Without U\",\"image\":\"https:\\/\\/usercontent.jamendo.com?type=album&id=570554&width=300\",\"artist\":\"Neon NiteClub\"}'),
-(5, 1, 'album', '581062', 1, '2025-06-05 14:26:14', '{\"name\":\"Alive\",\"image\":\"https:\\/\\/usercontent.jamendo.com?type=album&id=581062&width=300\",\"artist\":\"Songwriterz\"}'),
-(6, 1, 'album', '589030', 1, '2025-06-05 14:26:14', '{\"name\":\"Lose My Rose\",\"image\":\"https:\\/\\/usercontent.jamendo.com?type=album&id=589030&width=300\",\"artist\":\"Ed Napoli\"}'),
-(7, 1, 'playlist', 'default-1', 1, '2025-06-05 14:26:14', '{\"name\":\"Favorites\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist.png\",\"is_default\":true,\"is_pinned\":true}');
+(16, 1, 'playlist', '55', 1, '2025-06-09 15:39:17', '{\"name\":\"MyPlaylist55\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist-512px.png\"}'),
+(17, 1, 'playlist', '56', 1, '2025-06-09 15:39:52', '{\"name\":\"MyPlaylist56\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist-512px.png\"}'),
+(18, 2, 'playlist', '57', 1, '2025-06-09 15:46:03', '{\"name\":\"Favorites\",\"image\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/favourite-playlist-512px.png\",\"is_default\":true,\"is_pinned\":true}'),
+(19, 2, 'playlist', '58', 0, '2025-06-09 15:50:53', '{\"name\":\"MyPlaylist2\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist-512px.png\"}'),
+(20, 2, 'playlist', '59', 0, '2025-06-09 15:52:29', '{\"name\":\"MyPlaylist3\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist-512px.png\"}'),
+(21, 2, 'playlist', '60', 0, '2025-06-09 15:53:25', '{\"name\":\"MyPlaylist4\",\"image_url\":\"http:\\/\\/localhost\\/musyk\\/public\\/assets\\/images\\/default-playlist-512px.png\"}');
 
 -- --------------------------------------------------------
 
@@ -100,7 +99,37 @@ INSERT INTO `playlists` (`id`, `user_id`, `name`, `image_url`, `is_default`, `cr
 (27, 1, 'MyPlaylist27', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-06 15:35:11', ''),
 (28, 1, 'MyPlaylist28', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-06 15:42:13', ''),
 (29, 1, 'MyPlaylist29', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 07:16:30', ''),
-(30, 1, 'MyPlaylist30', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 07:23:16', '');
+(30, 1, 'MyPlaylist30', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 07:23:16', ''),
+(31, 1, 'MyPlaylist31', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 07:51:46', ''),
+(32, 1, 'MyPlaylist32', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 07:53:53', ''),
+(33, 1, 'MyPlaylist33', 'http://localhost/musyk/public/assets/images/default-playlist.png', 0, '2025-06-09 08:08:13', ''),
+(34, 1, 'MyPlaylist34', 'http://localhost/musyk/public/assets/images/playlist/default-playlist.png', 0, '2025-06-09 08:09:02', ''),
+(35, 1, 'MyPlaylist35', 'http://localhost/musyk/public/assets/images/playlist/default-playlist.png', 0, '2025-06-09 08:09:31', ''),
+(36, 1, 'MyPlaylist36', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-16px.png', 0, '2025-06-09 08:11:39', ''),
+(37, 1, 'MyPlaylist37', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:15:47', ''),
+(38, 1, 'MyPlaylist38', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:15:59', ''),
+(39, 1, 'MyPlaylist39', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:18:22', ''),
+(40, 1, 'MyPlaylist40', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:18:58', ''),
+(41, 1, 'MyPlaylist41', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:21:47', ''),
+(42, 1, 'MyPlaylist42', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:22:16', ''),
+(43, 1, 'MyPlaylist43', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:27:25', ''),
+(44, 1, 'MyPlaylist44', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:28:12', ''),
+(45, 1, 'MyPlaylist45', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:28:46', ''),
+(46, 1, 'MyPlaylist46', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:29:37', ''),
+(47, 1, 'MyPlaylist47', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:31:59', ''),
+(48, 1, 'MyPlaylist48', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:32:25', ''),
+(49, 1, 'MyPlaylist49', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:36:34', ''),
+(50, 1, 'MyPlaylist50', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:36:42', ''),
+(51, 1, 'MyPlaylist51', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:36:58', ''),
+(52, 1, 'MyPlaylist52', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 08:42:11', ''),
+(53, 1, 'MyPlaylist53', 'http://localhost/musyk/public/assets/images/playlist/default-playlist-512px.png', 0, '2025-06-09 09:03:27', ''),
+(54, 1, 'Favorites', 'http://localhost/musyk/public/assets/images/playlist/favourite-playlist-512px.png', 1, '2025-06-09 14:14:31', 'Your favorite tracks'),
+(55, 1, 'MyPlaylist55', 'http://localhost/musyk/public/assets/images/default-playlist-512px.png', 0, '2025-06-09 15:39:17', ''),
+(56, 1, 'MyPlaylist56', 'http://localhost/musyk/public/assets/images/default-playlist-512px.png', 0, '2025-06-09 15:39:52', ''),
+(57, 2, 'Favorites', 'http://localhost/musyk/public/assets/images/favourite-playlist-512px.png', 1, '2025-06-09 15:46:03', 'Your favorite tracks'),
+(58, 2, 'MyPlaylist2', 'http://localhost/musyk/public/assets/images/default-playlist-512px.png', 0, '2025-06-09 15:50:53', ''),
+(59, 2, 'MyPlaylist3', 'http://localhost/musyk/public/assets/images/default-playlist-512px.png', 0, '2025-06-09 15:52:29', ''),
+(60, 2, 'MyPlaylist4', 'http://localhost/musyk/public/assets/images/default-playlist-512px.png', 0, '2025-06-09 15:53:25', '');
 
 -- --------------------------------------------------------
 
@@ -134,7 +163,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `created_at`) VALUES
-(1, 'ivanoice', 'ivankovicsibsion@gmail.com', '$2y$10$h5BI8hYj2vRTMpJeGOD3zujc59.Hw9tXFqMEYTUZeKMhuheBuiTVW', '2025-05-20 14:25:16');
+(1, 'ivanoice', 'ivankovicsibsion@gmail.com', '$2y$10$h5BI8hYj2vRTMpJeGOD3zujc59.Hw9tXFqMEYTUZeKMhuheBuiTVW', '2025-05-20 14:25:16'),
+(2, 'gigi', 'gigiconch@gmail.com', '$2y$10$gKFyCHPLBWvd7hyLLOE4d.CYehuZ.9BRuQCD6HtvCndjf5msO/B7q', '2025-06-09 15:46:03');
 
 --
 -- Indici per le tabelle scaricate
@@ -174,13 +204,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT per la tabella `library_items`
 --
 ALTER TABLE `library_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT per la tabella `playlists`
 --
 ALTER TABLE `playlists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT per la tabella `playlist_songs`
@@ -192,7 +222,7 @@ ALTER TABLE `playlist_songs`
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
