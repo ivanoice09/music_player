@@ -7,7 +7,7 @@ class BaseController
     function view($view, $data = [])
     {
         extract($data);
-        
+
         if ($this->isAjaxRequest()) {
             // For AJAX requests, only load the main content
             require_once APP_ROOT . '/app/views/' . $view . '.php';
@@ -24,5 +24,18 @@ class BaseController
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+
+    function showErrorPage($code, $title, $message = '')
+    {
+        http_response_code($code);
+        $errorView = APP_ROOT . '/app/views/error.php';
+
+        if (file_exists($errorView)) {
+            require $errorView;
+        } else {
+            die("<h1>$code $title</h1><p>$message</p>");
+        }
+        exit;
     }
 }

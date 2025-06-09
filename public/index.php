@@ -4,7 +4,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+//======================
 // Define path constants
+//======================
 define('ROOT', dirname(__DIR__));
 define('DS', DIRECTORY_SEPARATOR);
 
@@ -15,7 +17,9 @@ require_once ROOT . '/config/config.php';
 // Load routes
 require_once ROOT . '/config/routes.php';
 
+//==================
 // Simple autoloader
+//==================
 /**
  * Why use autoloader?
  * Without one, you'd have to manually require or include every class file
@@ -48,47 +52,54 @@ $url = filter_var($url, FILTER_SANITIZE_URL);
 // Debugging output
 error_log("Debug: Full URL: $url");
 
+//===============
 // Route handling
-if (isset($routes[$url])) {
-    $route = $routes[$url];
-    $controllerName = $route['controller'];
-    $actionName = $route['action'];
+//===============
+$matched = false;
+foreach ($routes as $pattern => $route) {
+    // Convert route pattern to regex
+    $regex = '#^' . str_replace('/', '\/', $pattern) . '$#';
+    
+    if (preg_match($regex, $url, $matches)) {
+        $controllerName = $route['controller'];
+        $actionName = $route['action'];
+        
+        // Debugging output
+        error_log("Debug: Loading controller: $controllerName");
+        error_log("Debug: Calling action: $actionName");
 
-    // Load and execute the controller
-    $controllerFile = ROOT . '/app/controllers/' . $controllerName . '.php';
-    if (file_exists($controllerFile)) {
-        require_once $controllerFile;
-        $controller = new $controllerName();
-        $controller->$actionName();
-    } else {
-        die("Controller not found: $controllerFile");
+        // Load controller file
+        $controllerFile = ROOT . '/app/controllers/' . $controllerName . '.php';
+        if (file_exists($controllerFile)) {
+            require_once $controllerFile;
+
+            // Instantiate controller
+            $controller = new $controllerName();
+
+            // Remove the full match (index 0) and keep only parameters
+            array_shift($matches);
+            
+            // Call action with parameters
+            if (method_exists($controller, $actionName)) {
+                call_user_func_array([$controller, $actionName], $matches);
+            } else {
+                // Use BaseController directly for errors
+                $baseController = new BaseController();
+                $baseController->showErrorPage(404, 'Not Found', "Action method not found: $actionName");
+            }
+            
+            $matched = true;
+            break;
+        } else {
+            // Use BaseController directly for errors
+            $baseController = new BaseController();
+            $baseController->showErrorPage(500, 'Internal Server Error', "Controller file not found: $controllerFile");
+        }
     }
-} else {
-    // 404 - Route not found
-    header("HTTP/1.0 404 Not Found");
-    require_once ROOT . '/app/controllers/BaseController.php';
-    $controller = new BaseController();
-    $controller->view('error');
 }
 
-// Debugging output
-error_log("Debug: Loading controller: $controllerName");
-error_log("Debug: Calling action: $actionName");
-
-// Load controller file
-$controllerFile = ROOT . '/app/controllers/' . $controllerName . '.php';
-if (file_exists($controllerFile)) {
-    require_once $controllerFile;
-
-    // Instantiate controller
-    $controller = new $controllerName();
-
-    // Call action
-    if (method_exists($controller, $actionName)) {
-        $controller->$actionName();
-    } else {
-        die("<!-- Debug: Action method not found: $actionName -->");
-    }
-} else {
-    die("<!-- Debug: Controller file not found: $controllerFile -->");
+if (!$matched) {
+    // Use BaseController directly for 404 errors
+    $baseController = new BaseController();
+    $baseController->showErrorPage(404, 'Not Found');
 }

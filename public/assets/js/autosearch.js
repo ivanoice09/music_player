@@ -304,28 +304,57 @@ $(document).ready(function () {
         });
     }
 
+    let activePlaylistRequest = null;
+
     // Consolidated function for Playlist page view
     function loadPlaylistView(playlistId) {
-        const url = 'playlist';
+
+        // Validate input
+        if (!playlistId) {
+            showError('Invalid playlist ID');
+            return;
+        }
+
+        // Abort any pending request
+        if (activePlaylistRequest) {
+            activePlaylistRequest.abort();
+        }
+
+        const url = `${URL_ROOT}/playlist/${playlistId}`;
         console.log('Loading playlist from:', url);  // Debug log
 
+        // Show loading state
         mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
-        window.history.pushState({ view: 'playlist', playlistId }, '', `${URL_ROOT}/playlist`);
 
-        $.ajax({
+        // Make the request
+        activePlaylistRequest = $.ajax({
             url: url,
             dataType: 'json',
             success: (data) => {
-                console.log('Playlist data received:', data); // Add this line
+                console.log('Playlist data received:', data);
                 if (data.error) {
                     showError(data.error);
+                    mainContainer.html(''); // Clear loading state
                 } else {
+                    // Only update URL after successful load
+                    window.history.pushState(
+                        { view: 'playlist', playlistId },
+                        '',
+                        `${URL_ROOT}/playlist/${playlistId}`
+                    );
                     displayPlaylistContent(data);
                 }
             },
             error: (xhr) => {
-                const errorMsg = xhr.responseJSON?.error || 'Error loading playlist';
-                showError(`${errorMsg} (Status: ${xhr.status})`);
+                // Don't show error if request was aborted
+                if (xhr.statusText !== 'abort') {
+                    const errorMsg = xhr.responseJSON?.error || 'Error loading playlist';
+                    showError(`${errorMsg} (Status: ${xhr.status})`);
+                    mainContainer.html(''); // Clear loading state
+                }
+            },
+            complete: () => {
+                activePlaylistRequest = null;
             }
         });
     }
@@ -361,7 +390,7 @@ $(document).ready(function () {
     // ========================
     function createNewPlaylist() {
         $.ajax({
-            url: 'create',
+            url: 'playlist/create',
             method: 'POST',
             success: (data) => {
                 if (data.success && data.id) {

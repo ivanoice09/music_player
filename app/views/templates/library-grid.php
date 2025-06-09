@@ -35,7 +35,7 @@
           {{else}}
             <img src="{{image}}" class="card-img-top" alt="{{name}}">
           {{/if}}
-          <div class="card-body">
+          <div class="card-body" style="color: white;">
             <h5 class="card-title">{{name}}</h5>
             <p class="card-text">{{item_type}}</p>
             <button class="btn btn-sm btn-outline-secondary pin-btn">

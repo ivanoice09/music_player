@@ -3,14 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 04, 2025 alle 17:55
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.2.12
+-- Created on: Jun 07, 2025 at 12:52
+-- Server version: 8.1.0
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -20,128 +19,84 @@ SET time_zone = "+00:00";
 --
 -- Database: `musyk_db`
 --
+CREATE DATABASE IF NOT EXISTS `musyk_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+USE `musyk_db`;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `library_items`
+-- Table structure for table `library_items`
 --
 
 CREATE TABLE `library_items` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `item_type` enum('playlist','artist','album') NOT NULL,
-  `item_id` varchar(255) NOT NULL,
-  `is_pinned` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `item_type` enum('playlist','artist','album') CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `item_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `is_pinned` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `metadata` json DEFAULT NULL COMMENT 'Stores additional item data in JSON format',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `playlists`
+-- Table structure for table `playlists`
 --
 
 CREATE TABLE `playlists` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `image_url` varchar(255) DEFAULT NULL,
-  `is_default` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `is_default` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `playlist_songs`
+-- Table structure for table `playlist_songs`
 --
 
 CREATE TABLE `playlist_songs` (
-  `id` int(11) NOT NULL,
-  `playlist_id` int(11) NOT NULL,
-  `song_id` varchar(255) NOT NULL,
-  `added_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `playlist_id` int NOT NULL,
+  `song_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `playlist_id` (`playlist_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
--- Dump dei dati per la tabella `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `created_at`) VALUES
 (1, 'ivanoice', 'ivankovicsibsion@gmail.com', '$2y$10$h5BI8hYj2vRTMpJeGOD3zujc59.Hw9tXFqMEYTUZeKMhuheBuiTVW', '2025-05-20 14:25:16');
 
---
--- Indici per le tabelle scaricate
---
-
---
--- Indici per le tabelle `library_items`
---
-ALTER TABLE `library_items`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indici per le tabelle `playlists`
---
-ALTER TABLE `playlists`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indici per le tabelle `playlist_songs`
---
-ALTER TABLE `playlist_songs`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indici per le tabelle `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `library_items`
---
-ALTER TABLE `library_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `playlists`
---
-ALTER TABLE `playlists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `playlist_songs`
---
-ALTER TABLE `playlist_songs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
