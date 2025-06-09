@@ -37,7 +37,7 @@ class PlaylistController extends BaseController
         $playlistCount = $this->userModel->getUserPlaylistCount($_SESSION['user_id']);
         $newPlaylist = [
             'name' => 'MyPlaylist' . ($playlistCount + 1),
-            'image_url' => URL_ROOT . '/assets/images/default-playlist.png',
+            'image_url' => URL_ROOT . '/assets/images/playlist/default-playlist-512px.png',
             'description' => ''
         ];
 

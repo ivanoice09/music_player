@@ -2,10 +2,12 @@
 class User
 {
     private $db;
+    private $musicModel;
 
     public function __construct()
     {
         $this->db = new Database();
+        $this->musicModel = new Music();
     }
 
     // Register user
@@ -155,29 +157,49 @@ class User
 
     public function getPlaylist($userId, $playlistId)
     {
+        // First get the basic playlist info
         $stmt = $this->db->prepare("
-                SELECT p.*, 
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'id', s.id,
-                            'title', s.title,
-                            'artist', s.artist_name,
-                            'duration', s.duration,
-                            'image_url', s.image_url,
-                            'audio_url', s.audio_url
-                        )
-                    ) as songs
-                FROM playlists p
-                LEFT JOIN playlist_songs ps ON p.id = ps.playlist_id
-                LEFT JOIN songs s ON ps.song_id = s.id
-                WHERE p.user_id = ? AND p.id = ?
-                GROUP BY p.id
-            ");
+        SELECT p.* 
+        FROM playlists p
+        WHERE p.user_id = ? AND p.id = ?
+    ");
         $stmt->execute([$userId, $playlistId]);
         $playlist = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($playlist) {
-            $playlist['songs'] = json_decode($playlist['songs'] ?? '[]', true);
+        if (!$playlist) {
+            return null;
+        }
+
+        // Get the song IDs from the playlist_songs table
+        $stmt = $this->db->prepare("
+        SELECT song_id 
+        FROM playlist_songs 
+        WHERE playlist_id = ?
+        ORDER BY added_at
+    ");
+        $stmt->execute([$playlistId]);
+        $songIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Initialize empty songs array
+        $playlist['songs'] = [];
+
+        // Fetch song details from Jamendo API for each song ID
+        if (!empty($songIds)) {
+            $music = new Music();
+            $tracks = $music->getTracks($songIds);
+
+            if ($tracks && isset($tracks['results'])) {
+                foreach ($tracks['results'] as $song) {
+                    $playlist['songs'][] = [
+                        'id' => $song['id'],
+                        'title' => $song['name'],
+                        'artist' => $song['artist_name'],
+                        'duration' => $song['duration'],
+                        'image_url' => $song['image'],
+                        'audio_url' => $song['audio'] ?? $song['audiodownload'] ?? null
+                    ];
+                }
+            }
         }
 
         return $playlist;

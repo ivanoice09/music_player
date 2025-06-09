@@ -30,10 +30,10 @@ class Music
     }
 
     // Get track by ID
-    public function getTrack($id)
+    public function getTracks(array $ids)
     {
         $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
-            '&format=jsonpretty&id=' . $id;
+            '&format=jsonpretty&id=' . implode(',', $ids);
 
         return $this->callApi($url);
     }

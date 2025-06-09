@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'musyk_db');
 define('DB_USER', 'root');
-define('DB_PASS', '_password');
+define('DB_PASS', '1234');
 
 // Jamendo API configuration
 define('JAMENDO_CLIENT_ID', 'c7db4016'); // Replace with your actual client ID
