@@ -3,7 +3,6 @@ $(document).ready(function () {
     // ========================
     // HANDLEBARS CONFIGURATION
     // ========================
-
     // Equality helper
     Handlebars.registerHelper('eq', function (a, b, options) {
         // When used as inline helper (no options parameter)
@@ -29,7 +28,6 @@ $(document).ready(function () {
     // ==============
     // ERROR HANDLERS
     // ==============
-
     function showError(message, duration = 3000) {
         const errorElement = $(`<div class="alert alert-danger">${message}</div>`);
         $('#mainView').prepend(errorElement);
@@ -39,7 +37,6 @@ $(document).ready(function () {
     // =================
     // APPLICATION SETUP
     // =================
-
     const playerBar = $('#playerBar');
     const mainContainer = $('#mainView'); // Consistent container reference
     const templateCache = {};
@@ -76,7 +73,6 @@ $(document).ready(function () {
     // ====================
     // CLICKABLE COMPONENTS
     // ====================
-
     // Handle popular songs anchor click
     $('#homeLink').click(function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -121,7 +117,6 @@ $(document).ready(function () {
     // ==================================
     // LIBRARY ADDITIONAL FUNCTIONALITIES
     // ==================================
-
     // This gets invoked by displayLibraryContent()
     function sortLibraryData(data, sortMethod = 'recent') {
 
@@ -198,8 +193,7 @@ $(document).ready(function () {
     // ================
     // TEMPLATE LOADERS
     // ================
-
-    // load template for songs' layout structures (grid, list)
+    // load template for any view page
     async function loadTemplate(templateName) {
         if (!templateCache[templateName]) {
             try {
@@ -235,7 +229,6 @@ $(document).ready(function () {
     // =================
     // DISPLAY FUNCTIONS
     // =================
-
     // Displays searching songs results
     async function displayResults(results, title = '', templateName = 'song-grid') {
         const mainContainer = $('#mainView');
@@ -374,7 +367,6 @@ $(document).ready(function () {
     // ===============
     // VIEW GENERATORS
     // ===============
-
     // Function to fetch popular songs
     function fetchPopularSongs() {
         $.ajax({
@@ -440,7 +432,6 @@ $(document).ready(function () {
         }
 
         const url = `${URL_ROOT}/playlist/${playlistId}`;
-        console.log('Loading playlist from:', url);  // Debug log
 
         // Show loading state
         mainContainer.html('<div class="col-12 text-center">Loading playlist...</div>');
@@ -543,10 +534,9 @@ $(document).ready(function () {
     }
 
 
-    // ================= 
-    //      MODALS
-    // =================
-
+    //======= 
+    // MODALS
+    //=======
     function showAuthRequiredModal() {
         // Check if modal already exists
         if ($('#authRequiredModal').length) {
@@ -573,10 +563,9 @@ $(document).ready(function () {
     // =======================
     // PLAYLIST FUNCTIONALITES
     // =======================
-
     function createNewPlaylist() {
         $.ajax({
-            url: 'playlist/create',
+            url: URL_ROOT + '/playlist/create',
             method: 'POST',
             success: (data) => {
                 if (data.success && data.id) {
@@ -589,7 +578,7 @@ $(document).ready(function () {
 
     function updatePlaylistName(playlistId, newName) {
         $.ajax({
-            url: 'playlist/update',
+            url: URL_ROOT + 'playlist/update',
             method: 'POST',
             data: JSON.stringify({
                 id: playlistId,
@@ -619,7 +608,7 @@ $(document).ready(function () {
         formData.append('id', playlistId);
 
         $.ajax({
-            url: 'playlist/update',
+            url: URL_ROOT + 'playlist/update',
             method: 'POST',
             data: formData,
             processData: false,
@@ -646,7 +635,6 @@ $(document).ready(function () {
     //============================
     // INITIALIZE THE INITIAL VIEW
     //============================
-
     // Check URL on page load for popular songs request
     function loadInitialView() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -658,10 +646,11 @@ $(document).ready(function () {
         }
     }
 
+
+
     //=========
     // POPSTATE
     //=========
-
     window.addEventListener('popstate', (event) => {
         if (event.state?.view === 'search') {
             performSearch(event.state.query);
@@ -679,7 +668,6 @@ $(document).ready(function () {
     //========================
     // GLOBAL SCOPE EXPOSITION
     //========================
-
     window.LibraryFunctions = {
         loadLibraryView,
         loadPlaylistView,
@@ -688,6 +676,5 @@ $(document).ready(function () {
         showError,
         showToast
     };
-
 });
 

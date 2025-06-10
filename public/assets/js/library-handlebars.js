@@ -23,6 +23,10 @@ $(document).ready(function () {
         const itemId = $(this).data('id');
         const itemType = $(this).data('type');
 
+        // Log the itemId and itemType to see their values
+        // console.log('Clicked item ID:', itemId);
+        // console.log('Item type:', itemType);
+
         switch (itemType) {
             case 'playlist':
                 loadPlaylistView(itemId);

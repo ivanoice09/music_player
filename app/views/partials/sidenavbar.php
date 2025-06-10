@@ -11,7 +11,6 @@
                 data-bs-trigger="focus">
 
                 <i class="bi bi-person-fill"></i>
-
             </a>
         </div>
 

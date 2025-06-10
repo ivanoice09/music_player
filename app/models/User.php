@@ -82,7 +82,6 @@ class User
     //======================
     // LIBRARY FUNCTIONALITY
     //======================
-
     // Add these methods to your User model
     public function getLibrary($userId)
     {

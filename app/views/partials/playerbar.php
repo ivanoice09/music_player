@@ -7,7 +7,7 @@
             </div>
             <div class="col-md-6">
                 <h6 id="nowPlayingTitle">No song selected</h6>
-                <p class="text-muted mb-0" id="nowPlayingArtist">Artist</p>
+                <p class="mb-0" id="nowPlayingArtist">Artist</p>
                 <div class="progress mt-2" style="height: 3px;">
                     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
                 </div>

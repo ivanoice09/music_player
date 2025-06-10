@@ -62,7 +62,9 @@ body.music-layout .list-group-item {
     background: #444;
 }
 
-/* Popover menu */
+/* ============ */
+/* POPOVER MENU */
+/* ============ */
 .popover-profile-menu {
     padding: 0.5rem 0;
     min-width: 150px;

@@ -8,6 +8,7 @@ class LibraryController extends BaseController
         $this->userModel = new User();
     }
 
+    // Putting library items inside library
     public function index()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -40,56 +41,6 @@ class LibraryController extends BaseController
             exit;
         }
     }
-
-    // This means I want to put some initial contents inside the library to test if it works
-    // private function seedInitialLibrary($userId)
-    // {
-    //     // Get sample content from Jamendo
-    //     $jamendoContent = [
-    //         'artists' => $this->musicModel->getPopularArtists(3),
-    //         'albums' => $this->musicModel->getPopularAlbums(3),
-    //         'playlists' => [
-    //             [
-    //                 'id' => 'default-1',
-    //                 'name' => 'Favorites',
-    //                 'image' => URL_ROOT . '/assets/images/playlist/favourite-playlist-512px.png',
-    //                 'is_default' => true,
-    //                 'is_pinned' => true
-    //             ]
-    //         ]
-    //     ];
-
-    //     $libraryItems = [];
-
-    //     // Add artists
-    //     foreach ($jamendoContent['artists'] as $artist) {
-    //         $libraryItems[] = $this->userModel->addToLibrary($userId, 'artist', $artist['id'], [
-    //             'name' => $artist['name'],
-    //             'image' => $artist['image']
-    //         ]);
-    //     }
-
-    //     // Add albums
-    //     foreach ($jamendoContent['albums'] as $album) {
-    //         $libraryItems[] = $this->userModel->addToLibrary($userId, 'album', $album['id'], [
-    //             'name' => $album['name'],
-    //             'image' => $album['image'],
-    //             'artist' => $album['artist_name']
-    //         ]);
-    //     }
-
-    //     // Add default playlist
-    //     foreach ($jamendoContent['playlists'] as $playlist) {
-    //         $libraryItems[] = $this->userModel->addToLibrary($userId, 'playlist', $playlist['id'], [
-    //             'name' => $playlist['name'],
-    //             'image_url' => $playlist['image'],
-    //             'is_default' => $playlist['is_default'],
-    //             'is_pinned' => $playlist['is_pinned']
-    //         ]);
-    //     }
-
-    //     return $libraryItems;
-    // }
 
     public function add()
     {

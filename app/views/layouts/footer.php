@@ -23,4 +23,5 @@
     <script src="<?php echo URL_ROOT; ?>/assets/js/playerbar.js"></script>
 </footer>
 </body>
+
 </html>

@@ -259,8 +259,9 @@ $(document).ready(function () {
             sessionStorage.setItem('playerState', JSON.stringify(stateToSave));
         },
 
+        //====================
         // PLAYLIST MANAGEMENT
-
+        //====================
         showAddToPlaylistToast: function () {
             if (!this.currentTrack) return;
 
@@ -314,11 +315,11 @@ $(document).ready(function () {
     };
 
     // Add plus button to player bar
-    $('#playerBar').append(`
-        <button class="btn btn-link text-white add-to-playlist-btn">
-            <i class="fas fa-plus"></i>
-        </button>
-    `);
+    // $('#playerBar').append(`
+    //     <button class="btn btn-link text-white add-to-playlist-btn">
+    //         <i class="fas fa-plus"></i>
+    //     </button>
+    // `);
 
     $('.add-to-playlist-btn').on('click', () => playerState.showAddToPlaylistToast());
 
