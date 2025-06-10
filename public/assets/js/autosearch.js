@@ -1,4 +1,25 @@
+
 $(document).ready(function () {
+
+    //===============================
+    // HIDING PLAYERBAR IN AUTH PAGES
+    //===============================
+    // Function to check if we're on auth pages
+    function isAuthPage() {
+        return /\/auth\/(login|register)/i.test(window.location.pathname);
+    }
+
+    // Function to toggle playerbar visibility
+    function togglePlayerbar() {
+        if (isAuthPage()) {
+            $('#playerBar, #fullPlayer').addClass('auth-hidden');
+        } else {
+            $('#playerBar, #fullPlayer').removeClass('auth-hidden');
+        }
+    }
+
+    // Initial check
+    togglePlayerbar();
 
     // ========================
     // HANDLEBARS CONFIGURATION
@@ -363,7 +384,6 @@ $(document).ready(function () {
         }
     }
 
-
     // ===============
     // VIEW GENERATORS
     // ===============
@@ -415,6 +435,8 @@ $(document).ready(function () {
             success: (data) => displayLibraryContent(data),
             error: () => showError('Error loading library')
         });
+
+        togglePlayerbar();
     }
 
     // Consolidated function for Playlist page view
@@ -467,6 +489,8 @@ $(document).ready(function () {
                 activePlaylistRequest = null;
             }
         });
+
+        togglePlayerbar();
     }
 
     // Consolidated function for Artist page view
@@ -499,6 +523,8 @@ $(document).ready(function () {
                 showError(`${errorMsg} (Status: ${xhr.status})`);
             }
         });
+
+        togglePlayerbar();
     }
 
     // Consolidated function for Album page view
@@ -531,6 +557,8 @@ $(document).ready(function () {
                 showError(`${errorMsg} (Status: ${xhr.status})`);
             }
         });
+
+        togglePlayerbar();
     }
 
 
@@ -565,6 +593,9 @@ $(document).ready(function () {
     // =======================
     function createNewPlaylist() {
         $.ajax({
+            // added URL_ROOT, because when in the Playlist view, 
+            // and the user clicks on create playlist, 
+            // the url 'playlist/create' becomes 'playlist/playlist/create'
             url: URL_ROOT + '/playlist/create',
             method: 'POST',
             success: (data) => {
@@ -646,8 +677,6 @@ $(document).ready(function () {
         }
     }
 
-
-
     //=========
     // POPSTATE
     //=========
@@ -663,6 +692,11 @@ $(document).ready(function () {
         } else {
             showPopularSongs();
         }
+    });
+
+    // Listen for URL changes (since my app uses AJAX navigation)
+    $(window).on('popstate', function () {
+        togglePlayerbar();
     });
 
     //========================

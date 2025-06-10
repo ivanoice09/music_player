@@ -50,3 +50,29 @@
     background-color: #1db954;
     transition: width 0.1s linear;
 }
+
+/* 
+    HIDING THE PLAYERBAR IN AUTHENTICATION PAGES:
+*/
+
+/* 
+For better maintainability, 
+add a CSS class to hide the playerbar:
+*/
+.player-bar.auth-hidden,
+.full-player.auth-hidden {
+    display: none !important;
+}
+
+/*
+    THIS ENSURES THE PLAYERBAR STAYS HIDDEN
+*/
+.player-bar[data-auth-page="true"],
+.full-player[data-auth-page="true"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+}

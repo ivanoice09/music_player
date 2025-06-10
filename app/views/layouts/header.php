@@ -29,12 +29,13 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playlist.css">
 
     <!-- AUTH MODAL -->
-     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/authModal.css">
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/authModal.css">
 
     <!-- HANDLEBARS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 </head>
 
+<!-- This 'is_music_page' is for destinguishing the layouts for css styles application -->
 <body class="<?php echo isset($data['is_music_page']) ? 'music-layout' : 'default-layout'; ?>">
     <?php
     // Only show navbar if not explicitly hidden
@@ -42,4 +43,3 @@
         require_once APP_ROOT . '/app/views/partials/sidenavbar.php';
         require_once APP_ROOT . '/app/views/partials/floatingSearchBar.php';
     }
-    ?>

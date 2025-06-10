@@ -20,7 +20,7 @@
     <!-- LIBRARY HANDLEBAR -->
     <script src="<?php echo URL_ROOT; ?>/assets/js/library-handlebars.js"></script>
     <!-- PLAYER BAR JQUERY -->
-    <script src="<?php echo URL_ROOT; ?>/assets/js/playerbar.js"></script>
+    <script src="<?php echo URL_ROOT;?>/assets/js/playerbar.js"></script>
 </footer>
 </body>
 

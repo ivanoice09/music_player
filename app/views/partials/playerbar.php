@@ -1,19 +1,21 @@
-<!-- PLAYERBAR (HIDDEN BY DEFAULT) -->
-<div class="player-bar" id="playerBar">
+<div class="player-bar" id="playerBar" ata-auth-page="<?php echo (isset($data['hide_playerbar']) && $data['hide_playerbar']) ? 'true' : 'false'; ?>">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-2">
                 <img src="" alt="Album Art" id="nowPlayingArt" class="img-thumbnail" style="width: 60px; height: 60px;">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <h6 id="nowPlayingTitle">No song selected</h6>
                 <p class="mb-0" id="nowPlayingArtist">Artist</p>
                 <div class="progress mt-2" style="height: 3px;">
                     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="d-flex justify-content-between align-items-center">
+                    <button id="addToPlaylistBtn" class="btn btn-link">
+                        <i class="fas fa-plus"></i>
+                    </button>
                     <button id="prevBtn" class="btn btn-link">
                         <i class="fas fa-step-backward"></i>
                     </button>
@@ -35,7 +37,7 @@
 </div>
 
 <!-- Full Player View (hidden by default) -->
-<div class="full-player" id="fullPlayer">
+<div class="full-player" id="fullPlayer" data-auth-page="<?php echo (isset($data['hide_playerbar']) && $data['hide_playerbar']) ? 'true' : 'false'; ?>">
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 text-center">

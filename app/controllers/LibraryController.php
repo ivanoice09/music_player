@@ -9,13 +9,24 @@ class LibraryController extends BaseController
     }
 
     // Putting library items inside library
+    /**
+     * MODIFICATION @14:08 JUNE 10 2025:
+     * handles both cases - when the page is reloaded or accessed through the url directly,
+     * the page goes automaitcally go back to home page
+     */
     public function index()
     {
         if (!isset($_SESSION['user_id'])) {
-            header('Content-Type: application/json');
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            exit;
+            if ($this->isAjaxRequest()) {
+                header('Content-Type: application/json');
+                http_response_code(401);
+                echo json_encode(['error' => 'Unauthorized']);
+                exit;
+            } else {
+                // Redirect to login for full page requests
+                header('Location: /login');
+                exit;
+            }
         }
 
         try {
@@ -28,17 +39,34 @@ class LibraryController extends BaseController
             }
 
             $libraryItems = $this->userModel->getLibrary($_SESSION['user_id']);
-            error_log(print_r($libraryItems, true)); // Log the retrieved items
 
-            header('Content-Type: application/json');
-            echo json_encode($libraryItems);
-            exit;
-            
+            if ($this->isAjaxRequest()) {
+                // AJAX request - return JSON
+                header('Content-Type: application/json');
+                echo json_encode($libraryItems);
+                exit;
+            } else {
+                // Full page request - load view with data
+                $this->view('layouts/main', [
+                    'is_music_page' => true,
+                    'library_items' => $libraryItems
+                ]);
+            }
         } catch (Exception $e) {
-            header('Content-Type: application/json');
-            http_response_code(500);
-            echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
-            exit;
+
+            if ($this->isAjaxRequest()) {
+                header('Content-Type: application/json');
+                http_response_code(500);
+                echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+                exit;
+                
+            } else {
+                // Handle error for full page request
+                $this->view('layouts/main', [
+                    'is_music_page' => true,
+                    'error' => 'Server error: ' . $e->getMessage()
+                ]);
+            }
         }
     }
 

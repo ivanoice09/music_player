@@ -22,7 +22,9 @@ class AuthController extends BaseController
                 'username_err' => '',
                 'email_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'hide_navbar' => true,
+                'hide_playerbar' => true
             ];
 
             // Validate Username
@@ -76,7 +78,6 @@ class AuthController extends BaseController
                 }
             } else {
                 // Load view with errors
-                $data['hide_navbar'] = true;
                 $this->view('auth/register', $data);
             }
         } else {
@@ -89,11 +90,12 @@ class AuthController extends BaseController
                 'username_err' => '',
                 'email_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'hide_navbar' => true,
+                'hide_playerbar' => true
             ];
 
             // Load view
-            $data['hide_navbar'] = true;
             $this->view('auth/register', $data);
         }
     }
@@ -109,6 +111,8 @@ class AuthController extends BaseController
                 'password' => trim($_POST['password'] ?? ''),
                 'username_err' => '',
                 'password_err' => '',
+                'hide_navbar' => true,
+                'hide_playerbar' => true
             ];
 
             // Validate Username
@@ -143,7 +147,6 @@ class AuthController extends BaseController
                 }
             } else {
                 // Load view with errors
-                $data['hide_navbar'] = true;
                 $this->view('auth/login', $data);
             }
         } else {
@@ -153,10 +156,11 @@ class AuthController extends BaseController
                 'password' => '',
                 'username_err' => '',
                 'password_err' => '',
+                'hide_navbar' => true,
+                'hide_playerbar' => true
             ];
 
             // Load view
-            $data['hide_navbar'] = true;
             $this->view('auth/login', $data);
         }
     }

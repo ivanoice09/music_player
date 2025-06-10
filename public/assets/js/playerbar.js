@@ -12,6 +12,10 @@ $(document).ready(function () {
         init() {
             // Load state from sessionStorage if available
             const savedState = sessionStorage.getItem('playerState');
+
+            // Check if we're on an auth page from the data attribute
+            const isAuthPage = $('#playerBar').data('auth-page') === 'true';
+
             if (savedState) {
                 const parsedState = JSON.parse(savedState);
                 Object.assign(this, parsedState);
@@ -28,6 +32,13 @@ $(document).ready(function () {
                 }
             }
 
+            // Hide player elements if on auth page
+            if (isAuthPage) {
+                $('#playerBar').hide().css('display', 'none !important');
+                $('#fullPlayer').hide().css('display', 'none !important');
+                return; // Skip the rest of initialization on auth pages
+            }
+
             // Set up event listeners
             this.setupEventListeners();
         },
@@ -39,6 +50,7 @@ $(document).ready(function () {
             this.audio.addEventListener('loadedmetadata', this.updateDuration.bind(this));
 
             // Button events
+            $('#addToPlaylistBtn').on('click', this.showAddToPlaylistToast.bind(this));
             $('#playBtn, #fullPlayBtn').on('click', this.togglePlay.bind(this));
             $('#prevBtn, #fullPrevBtn').on('click', this.playPrevious.bind(this));
             $('#nextBtn, #fullNextBtn').on('click', this.playNext.bind(this));
@@ -262,7 +274,7 @@ $(document).ready(function () {
         //====================
         // PLAYLIST MANAGEMENT
         //====================
-        showAddToPlaylistToast: function () {
+        showAddToPlaylistToast() {
             if (!this.currentTrack) return;
 
             $.get('/playlists', (playlists) => {
@@ -314,18 +326,31 @@ $(document).ready(function () {
         },
     };
 
-    // Add plus button to player bar
-    // $('#playerBar').append(`
-    //     <button class="btn btn-link text-white add-to-playlist-btn">
-    //         <i class="fas fa-plus"></i>
-    //     </button>
-    // `);
-
-    $('.add-to-playlist-btn').on('click', () => playerState.showAddToPlaylistToast());
-
     // Initialize player
     window.playerState = playerState;
     playerState.init();
+
+    // to prevent any accidental showing on auth pages:
+    $(document).ready(function () {
+        // Double-check auth status on page load
+        const isAuthPage = $('#playerBar').data('auth-page') === 'true';
+        if (isAuthPage) {
+            $('#playerBar, #fullPlayer').hide().css({
+                'display': 'none !important',
+                'visibility': 'hidden !important'
+            });
+        }
+
+        // Optional: Prevent any show() calls on auth pages
+        const originalShow = $.fn.show;
+        $.fn.show = function () {
+            if ($(this).is('#playerBar, #fullPlayer') &&
+                $(this).data('auth-page') === 'true') {
+                return this; // Don't show on auth pages
+            }
+            return originalShow.apply(this, arguments);
+        };
+    });
 
     // Make sure player persists during SPA navigation
     $(document).on('spa:navigate', () => {
