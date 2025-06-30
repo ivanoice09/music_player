@@ -425,8 +425,6 @@ $(document).ready(function () {
     // Consolidated function for Library page view
     function loadLibraryView() {
         const url = 'library';
-        console.log('Loading playlist from:', url);
-
         mainContainer.html('<div class="col-12 text-center">Loading library...</div>');
         window.history.pushState({ view: 'library' }, '', `${URL_ROOT}/library`);
 
@@ -709,5 +707,6 @@ $(document).ready(function () {
         showError,
         showToast
     };
+    
 });
 

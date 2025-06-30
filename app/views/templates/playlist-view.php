@@ -9,7 +9,8 @@
     </div>
     <div class="playlist-info">
       <h1 contenteditable="true" id="playlistName">{{playlist.name}}</h1>
-      <p class="text-muted">{{playlist.songs.length}} songs</p>
+      <!-- count how many songs in a playlist -->
+      <p>{{playlist.songs.length}} songs</p>
     </div>
   </div>
 

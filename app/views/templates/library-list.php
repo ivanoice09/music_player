@@ -27,7 +27,8 @@
   <ul class="list-group">
     {{#each items}}
       <li class="list-group-item library-item {{#if is_pinned}}pinned{{/if}}" 
-          data-id="{{id}}" 
+          data-id="{{id}}"
+          data-item-id="{{item_id}}"
           data-type="{{item_type}}">
         <div class="d-flex align-items-center">
           {{#if (eq item_type 'playlist')}}
