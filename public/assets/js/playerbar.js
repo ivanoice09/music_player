@@ -277,7 +277,9 @@ $(document).ready(function () {
         showAddToPlaylistToast() {
             if (!this.currentTrack) return;
 
-            $.get('/playlists', (playlists) => {
+            const url = `${URL_ROOT}/playlists`;
+
+            $.get(url, (playlists) => {
                 const $toast = $(`
                 <div class="toast show" role="alert" style="position: fixed; bottom: 80px; right: 20px;">
                     <div class="toast-header">
