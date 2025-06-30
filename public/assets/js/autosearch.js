@@ -441,7 +441,6 @@ $(document).ready(function () {
 
     // Consolidated function for Playlist page view
     function loadPlaylistView(playlistId) {
-
         // Validate input
         if (!playlistId) {
             showError('Invalid playlist ID');

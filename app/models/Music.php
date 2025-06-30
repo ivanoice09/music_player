@@ -36,9 +36,24 @@ class Music
     // Get track by ID
     public function getTracks(array $ids)
     {
+        if (empty($ids)) {
+            error_log("Empty track IDs requested");
+            return ['results' => []];
+        }
+
+        // Filter out empty/non-string IDs
+        $validIds = array_filter($ids, function ($id) {
+            return !empty($id) && is_string($id);
+        });
+
+        if (empty($validIds)) {
+            return ['results' => []];
+        }
+
         $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
             '&format=jsonpretty&id=' . implode(',', $ids);
 
+        error_log("Jamendo API Request: " . $url);
         return $this->callApi($url);
     }
 
@@ -64,7 +79,6 @@ class Music
     //=============
     // CALL ARTISTS
     //=============
-
     public function getArtist($artistId)
     {
         $url = "https://api.jamendo.com/v3.0/artists/?client_id={$this->clientId}&id={$artistId}&format=json";

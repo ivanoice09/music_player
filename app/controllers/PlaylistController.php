@@ -10,6 +10,8 @@ class PlaylistController extends BaseController
 
     public function show($playlistId)
     {
+        // error_log("Received request for playlist ID: " . $playlistId);
+
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
             exit(json_encode(['error' => 'Unauthorized']));

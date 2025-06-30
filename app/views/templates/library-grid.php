@@ -1,6 +1,5 @@
-
 <script id="library-grid-template" type="text/x-handlebars-template">
-    <div class="library-header d-flex justify-content-between align-items-center mb-4">
+  <div class="library-header d-flex justify-content-between align-items-center mb-4">
     <h1>Library</h1>
     <div class="library-controls">
       <div class="btn-group">
@@ -29,7 +28,8 @@
     {{#each items}}
       <div class="col-md-3 col-sm-6 mb-4">
         <div class="card h-100 library-item {{#if is_pinned}}pinned{{/if}}" 
-             data-id="{{id}}" 
+             data-id="{{id}}"
+             data-item-id="{{item_id}}"
              data-type="{{item_type}}">
           {{#if (eq item_type 'playlist')}}
             <img src="{{image_url}}" class="card-img-top" alt="{{name}}">

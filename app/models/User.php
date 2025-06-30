@@ -230,38 +230,37 @@ class User
 
     public function getPlaylist($userId, $playlistId)
     {
-        // First get the basic playlist info
+        // 1. Verify playlist exists and belongs to user
         $stmt = $this->db->prepare("
-        SELECT p.* 
-        FROM playlists p
-        WHERE p.user_id = ? AND p.id = ?
-    ");
+            SELECT * FROM playlists 
+            WHERE user_id = ? AND id = ?
+        ");
         $stmt->execute([$userId, $playlistId]);
         $playlist = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$playlist) {
+            error_log("Playlist not found or access denied");
             return null;
         }
 
-        // Get the song IDs from the playlist_songs table
-        $stmt = $this->db->prepare("
-        SELECT song_id 
-        FROM playlist_songs 
-        WHERE playlist_id = ?
-        ORDER BY added_at
-    ");
-        $stmt->execute([$playlistId]);
-        $songIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        // Initialize empty songs array
+        // 2. Initialize songs array
         $playlist['songs'] = [];
 
-        // Fetch song details from Jamendo API for each song ID
+        // 3. Get song IDs only if playlist exists
+        $stmt = $this->db->prepare("
+            SELECT song_id FROM playlist_songs 
+            WHERE playlist_id = ?
+            ORDER BY added_at
+        ");
+        $stmt->execute([$playlistId]);
+        $songIds = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        // 4. Fetch track details only if we have song IDs
         if (!empty($songIds)) {
             $music = new Music();
             $tracks = $music->getTracks($songIds);
 
-            if ($tracks && isset($tracks['results'])) {
+            if (!empty($tracks['results'])) {
                 foreach ($tracks['results'] as $song) {
                     $playlist['songs'][] = [
                         'id' => $song['id'],
@@ -272,6 +271,8 @@ class User
                         'audio_url' => $song['audio'] ?? $song['audiodownload'] ?? null
                     ];
                 }
+            } else {
+                error_log("No tracks found for IDs: " . implode(',', $songIds));
             }
         }
 

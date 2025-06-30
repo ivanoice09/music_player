@@ -20,16 +20,18 @@ $(document).ready(function () {
             return;
         }
 
-        const itemId = $(this).data('id');
+        const libraryItemId = $(this).data('id'); // library_items.id
+        const itemId = $(this).data('itemId'); // library_items.item_id (the actual playlist/album/artist ID)
         const itemType = $(this).data('type');
 
         // Log the itemId and itemType to see their values
-        // console.log('Clicked item ID:', itemId);
+        // console.log('Library Item ID:', libraryItemId);
+        // console.log('Actual Reference ID:', itemId);
         // console.log('Item type:', itemType);
 
         switch (itemType) {
             case 'playlist':
-                loadPlaylistView(itemId);
+                loadPlaylistView(itemId); // Pass the CORRECT ID (itemId, not libraryItemId)
                 break;
             case 'album':
                 loadAlbumView(itemId);
