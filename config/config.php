@@ -11,8 +11,8 @@ define('JAMENDO_BASE_URL', 'https://api.jamendo.com/v3.0');
 
 // App configuration
 define('APP_ROOT', dirname(dirname(__FILE__)));
-define('URL_ROOT', 'http://' . $_SERVER['HTTP_HOST'] . '/musyk/public');
-define('SITE_NAME', 'Musyk');
+define('URL_ROOT', 'http://' . $_SERVER['HTTP_HOST'] . '/music_player/public');
+define('SITE_NAME', 'music player');
 
 // Error reporting
 error_reporting(E_ALL);
