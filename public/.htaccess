@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c> # Checks if the Apache mod_rewrite module is available
     Options -Indexes
     RewriteEngine On
-    RewriteBase /musyk/public/ 
+    RewriteBase /music_player/public/ 
 
     # Prevent direct access to view files
     RewriteRule ^app/views/ - [F,L]
