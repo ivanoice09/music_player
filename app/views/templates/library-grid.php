@@ -32,7 +32,8 @@
              data-item-id="{{item_id}}"
              data-type="{{item_type}}">
           {{#if (eq item_type 'playlist')}}
-            <img src="{{image_url}}" class="card-img-top" alt="{{name}}">
+            <!-- Changed from image_url to image to much the metadata stucture: -->
+            <img src="{{image}}" class="card-img-top" alt="{{name}}">
           {{else}}
             <img src="{{image}}" class="card-img-top" alt="{{name}}">
           {{/if}}
