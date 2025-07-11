@@ -8,6 +8,23 @@ class PlaylistController extends BaseController
         $this->userModel = new User();
     }
 
+    public function getPlaylists()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            http_response_code(401);
+            exit(json_encode(['error' => 'Unauthorized']));
+        }
+
+        $playlists = $this->userModel->getUserPlaylists($_SESSION['user_id']);
+        if (!is_array($playlists)) {
+            $playlists = [];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($playlists);
+        exit;
+    }
+
     public function show($playlistId)
     {
         // error_log("Received request for playlist ID: " . $playlistId);

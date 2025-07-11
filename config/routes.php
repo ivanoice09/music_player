@@ -69,6 +69,10 @@ $routes = [
      * 
      *   6) this `playlist/${playlistId}` route would show the playlist-view template
      */
+    'playlists' => [
+        'controller' => 'PlaylistController',
+        'action' => 'getPlaylists'
+    ],
     'playlist/create' => [
         'controller' => 'PlaylistController',
         'action' => 'create'

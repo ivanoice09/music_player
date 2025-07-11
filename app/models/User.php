@@ -114,10 +114,10 @@ class User
     public function addToLibrary($userId, $type, $itemId, $metadata = [])
     {
         $stmt = $this->db->prepare("
-        INSERT INTO library_items 
-        (user_id, item_type, item_id, metadata, is_pinned) 
-        VALUES (?, ?, ?, ?, ?)
-    ");
+            INSERT INTO library_items 
+            (user_id, item_type, item_id, metadata, is_pinned) 
+            VALUES (?, ?, ?, ?, ?)
+        ");
 
         $isPinned = ($type === 'playlist' && isset($metadata['is_default']))
             ? 1 : 0;
@@ -218,6 +218,27 @@ class User
         ]);
 
         return $playlistId;
+    }
+
+    public function getUserPlaylists($userId)
+    {
+        // Get all playlists for the user
+        $stmt = $this->db->prepare("SELECT * FROM playlists WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $playlists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // For each playlist, add the song IDs
+        foreach ($playlists as &$playlist) {
+            $playlist['songs'] = [];
+
+            $stmtSongs = $this->db->prepare("SELECT song_id FROM playlist_songs WHERE playlist_id = ?");
+            $stmtSongs->execute([$playlist['id']]);
+            $songIds = $stmtSongs->fetchAll(PDO::FETCH_COLUMN, 0);
+
+            $playlist['songs'] = $songIds;
+        }
+
+        return $playlists;
     }
 
     public function getUserPlaylistCount($userId)

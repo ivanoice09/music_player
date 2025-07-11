@@ -325,6 +325,18 @@ $(document).ready(function () {
 
         addToPlaylists: function (playlistIds) {
             // API call to add current track to selected playlists
+            if (!this.currentTrack || playlistIds.length === 0) return;
+            const url = `${URL_ROOT}/playlists/add`;
+            $.post(url, {
+                trackId: this.currentTrack.id,
+                playlistIds: playlistIds
+            }).done(() => {
+                // Show success message
+                alert('Track added to selected playlists!');
+            }).fail(() => {
+                // Show error message
+                alert('Failed to add track to playlists.');
+            });
         },
     };
 
