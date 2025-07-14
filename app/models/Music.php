@@ -49,6 +49,8 @@ class Music
             return ['results' => []];
         }
 
+        // The Jamendo API doesn't support multiple IDs in a single request,
+        // so we need to make separate requests for each ID.
         $allResults = [];
         foreach ($validIds as $id) {
             $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .

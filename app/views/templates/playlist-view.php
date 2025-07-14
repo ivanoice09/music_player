@@ -25,6 +25,8 @@
     {{#if playlist.songs.length}}
       <ul class="list-group">
         {{#each playlist.songs}}
+          <!-- Made the songs clickable so the user can play the songs right from their playlist
+            I've done it by putting the audio, name, artist, image -->
           <li class="list-group-item song-card text-white" 
               data-id="{{id}}"
               data-audio="{{audio}}" 
