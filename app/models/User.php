@@ -229,7 +229,7 @@ class User
 
         // For each playlist, add the song IDs
         foreach ($playlists as &$playlist) {
-            $playlist['songs'] = [];
+            $playlist['songs'][] = [];
 
             $stmtSongs = $this->db->prepare("SELECT song_id FROM playlist_songs WHERE playlist_id = ?");
             $stmtSongs->execute([$playlist['id']]);
@@ -279,17 +279,19 @@ class User
         // 4. Fetch track details only if we have song IDs
         if (!empty($songIds)) {
             $music = new Music();
+            error_log('Song IDs: ' . print_r($songIds, true));
             $tracks = $music->getTracks($songIds);
+            error_log('Tracks: ' . print_r($tracks, true));
 
             if (!empty($tracks['results'])) {
                 foreach ($tracks['results'] as $song) {
                     $playlist['songs'][] = [
                         'id' => $song['id'],
-                        'title' => $song['name'],
-                        'artist' => $song['artist_name'],
+                        'name' => $song['name'],
+                        'artist_name' => $song['artist_name'],
                         'duration' => $song['duration'],
-                        'image_url' => $song['image'],
-                        'audio_url' => $song['audio'] ?? $song['audiodownload'] ?? null
+                        'image' => $song['image'],
+                        'audio' => $song['audio'] ?? $song['audiodownload'] ?? null
                     ];
                 }
             } else {

@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
 
     //===============================
@@ -310,6 +309,8 @@ $(document).ready(function () {
                     songs: data.songs || [] // Ensure songs array exists
                 }
             };
+
+            console.log('Songs in playlist:', viewData.playlist.songs);
 
             mainContainer.html(template(viewData));
 

@@ -1,5 +1,5 @@
 <script id="playlist-view-template" type="text/x-handlebars-template">
-    <div class="playlist-header d-flex mb-4">
+  <div class="playlist-header d-flex mb-4">
     <div class="playlist-image-container me-4">
       <img src="{{playlist.image_url}}" id="playlistImage" class="playlist-image">
       <input type="file" id="playlistImageUpload" accept="image/*" style="display: none;">
@@ -25,12 +25,17 @@
     {{#if playlist.songs.length}}
       <ul class="list-group">
         {{#each playlist.songs}}
-          <li class="list-group-item song-item" data-id="{{id}}">
+          <li class="list-group-item song-card text-white" 
+              data-id="{{id}}"
+              data-audio="{{audio}}" 
+              data-title="{{name}}" 
+              data-artist="{{artist_name}}"
+              data-image="{{image}}">
             <div class="d-flex align-items-center">
               <img src="{{image}}" width="50" height="50" class="me-3">
               <div class="flex-grow-1">
                 <h6>{{name}}</h6>
-                <small class="text-muted">{{artist_name}}</small>
+                <small class="text-white">{{artist_name}}</small>
               </div>
               <button class="btn btn-sm btn-outline-danger remove-song-btn">
                 <i class="fas fa-times"></i>

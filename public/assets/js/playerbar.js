@@ -50,7 +50,7 @@ $(document).ready(function () {
             this.audio.addEventListener('loadedmetadata', this.updateDuration.bind(this));
 
             // Button events
-            $('#addToPlaylistBtn').on('click', this.showAddToPlaylistToast.bind(this));
+            $('#addToPlaylistBtn').on('click', this.showAddToPlaylistModal.bind(this));
             $('#playBtn, #fullPlayBtn').on('click', this.togglePlay.bind(this));
             $('#prevBtn, #fullPrevBtn').on('click', this.playPrevious.bind(this));
             $('#nextBtn, #fullNextBtn').on('click', this.playNext.bind(this));
@@ -73,6 +73,7 @@ $(document).ready(function () {
             $(document).on('click', '.song-card', function (e) {
                 if (!$(e.target).closest('a').length) { // Don't interfere with links
                     const $card = $(this);
+                    const id = $card.data('id'); // <-- Add this line
                     const audio = $card.data('audio');
                     const artist = $card.data('artist');
                     const title = $card.data('title');
@@ -82,6 +83,7 @@ $(document).ready(function () {
                     // Find this song in the current playlist or create a new one
                     const playlist = $('.song-card').map(function () {
                         return {
+                            id: $(this).data('id'), // <-- Add this line
                             audio: $(this).data('audio'),
                             artist: $(this).data('artist'),
                             title: $(this).data('title'),
@@ -92,10 +94,11 @@ $(document).ready(function () {
                     const index = playlist.findIndex(track => track.audio === audio);
 
                     playerState.playTrack({
+                        id, // <-- Add this line
                         audio,
                         artist,
                         title,
-                        image // Now guaranteed to have a value
+                        image
                     }, playlist, index);
 
                     $('#playerBar').show();
@@ -274,68 +277,100 @@ $(document).ready(function () {
         //====================
         // PLAYLIST MANAGEMENT
         //====================
-        showAddToPlaylistToast() {
+        showAddToPlaylistModal() {
             if (!this.currentTrack) return;
 
             const url = `${URL_ROOT}/playlists`;
 
             $.get(url, (playlists) => {
-                const $toast = $(`
-                <div class="toast show" role="alert" style="position: fixed; bottom: 80px; right: 20px;">
-                    <div class="toast-header">
-                        <strong>Add to Playlist</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                    </div>
-                    <div class="toast-body">
-                        <ul class="list-group">
-                            ${playlists.map(p => `
-                                <li class="list-group-item d-flex justify-content-between">
-                                    ${p.name}
-                                    <i class="fas ${p.songs.includes(playerState.currentTrack.id) ? 'fa-check-circle text-success' : 'fa-circle'}"></i>
-                                </li>
-                            `).join('')}
-                        </ul>
-                        <div class="d-flex justify-content-end mt-2">
-                            <button class="btn btn-sm btn-outline-secondary me-2 cancel-btn">Cancel</button>
-                            <button class="btn btn-sm btn-primary add-btn">Add</button>
+                // Remove any existing modal
+                $('#addToPlaylistModal').remove();
+
+                const $modal = $(`
+                    <div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addToPlaylistLabel">Add to Playlist</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="list-group">
+                                        ${playlists.map(p => `
+                                            <li class="list-group-item d-flex justify-content-between bg-dark text-white" data-id="${p.id}">
+                                                ${p.name}
+                                                <i class="fas ${p.songs.includes(playerState.currentTrack.id) ? 'fa-check-circle text-success' : 'fa-circle'}"></i>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary cancel-btn" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary add-btn">Add</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `);
+                `);
 
-                $('body').append($toast);
+                $('body').append($modal);
 
-                $toast.find('.list-group-item').on('click', function () {
+                // Bootstrap modal instance
+                const modalInstance = new bootstrap.Modal(document.getElementById('addToPlaylistModal'));
+                modalInstance.show();
+
+                $modal.find('.list-group-item').on('click', function () {
                     $(this).find('i').toggleClass('fa-circle fa-check-circle text-success');
                 });
 
-                $toast.find('.add-btn').on('click', () => {
-                    const selected = $toast.find('.fa-check-circle').closest('li');
+                $modal.find('.add-btn').on('click', () => {
+                    const selected = $modal.find('.fa-check-circle').closest('li');
                     const playlistIds = selected.map(function () {
                         return $(this).data('id');
                     }).get();
 
-                    this.addToPlaylists(playlistIds);
-                    $toast.remove();
+                    playerState.addToPlaylists(playlistIds);
+                    modalInstance.hide();
                 });
 
-                $toast.find('.cancel-btn, .btn-close').on('click', () => $toast.remove());
+                // Remove modal from DOM after hidden
+                $modal.on('hidden.bs.modal', function () {
+                    $modal.remove();
+                });
             });
         },
 
         addToPlaylists: function (playlistIds) {
-            // API call to add current track to selected playlists
             if (!this.currentTrack || playlistIds.length === 0) return;
-            const url = `${URL_ROOT}/playlists/add`;
-            $.post(url, {
-                trackId: this.currentTrack.id,
-                playlistIds: playlistIds
-            }).done(() => {
-                // Show success message
-                alert('Track added to selected playlists!');
-            }).fail(() => {
-                // Show error message
-                alert('Failed to add track to playlists.');
+            const url = `${URL_ROOT}/playlist/add-song`;
+
+            playlistIds.forEach(playlistId => {
+                console.log('Adding song:', {
+                    playlistId: playlistId,
+                    songId: this.currentTrack.id
+                }); // <-- Add this line
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        playlistId: playlistId,
+                        songId: this.currentTrack.id
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Track added to selected playlists!');
+                    } else {
+                        alert('Failed to add track to playlists: ' + data.message);
+                    }
+                })
+                .catch(() => {
+                    alert('Failed to add track to playlists.');
+                });
             });
         },
     };

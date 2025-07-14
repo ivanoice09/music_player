@@ -4,11 +4,12 @@
   <div class="row">
     {{#each songs}}
       <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 song-card text-white" 
+        <div class="card h-100 song-card text-white"
+             data-id="{{id}}"               
              data-audio="{{audio}}" 
              data-title="{{name}}" 
              data-artist="{{artist_name}}"
-             data-image="{{image}}">  <!-- Unified attribute -->
+             data-image="{{image}}">
           <img src="{{image}}" class="card-img-top" alt="{{name}}">
           <div class="card-body">
             <h5 class="card-title">{{name}}</h5>

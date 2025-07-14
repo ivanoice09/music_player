@@ -23,7 +23,6 @@ class Music
     //============
     // CALL TRACKS
     //============
-
     // Get popular tracks
     public function getPopularTracks($limit = 10)
     {
@@ -41,20 +40,27 @@ class Music
             return ['results' => []];
         }
 
-        // Filter out empty/non-string IDs
+        // Filter out empty/non-integer IDs
         $validIds = array_filter($ids, function ($id) {
-            return !empty($id) && is_string($id);
+            return !empty($id) && is_numeric($id) && intval($id) > 0;
         });
 
         if (empty($validIds)) {
             return ['results' => []];
         }
 
-        $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
-            '&format=jsonpretty&id=' . implode(',', $ids);
+        $allResults = [];
+        foreach ($validIds as $id) {
+            $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
+                '&format=jsonpretty&id=' . intval($id);
+            error_log("Jamendo API Request: " . $url);
+            $result = $this->callApi($url);
+            if (!empty($result['results'])) {
+                $allResults = array_merge($allResults, $result['results']);
+            }
+        }
 
-        error_log("Jamendo API Request: " . $url);
-        return $this->callApi($url);
+        return ['results' => $allResults];
     }
 
     public function searchTracks($query, $limit = 12)

@@ -23,6 +23,7 @@ class MusicController extends BaseController
             if (isset($apiResults['results'])) {
                 foreach ($apiResults['results'] as $track) {
                     $transformedResults[] = [
+                        'id' => $track['id'] ?? $track['track_id'] ?? $track['song_id'] ?? '', // <-- Add this line
                         'audio' => $track['audio'] ?? $track['audiodownload'] ?? '',
                         'name' => $track['name'] ?? 'Unknown Track',
                         'artist_name' => $track['artist_name'] ?? 'Unknown Artist',
@@ -49,6 +50,7 @@ class MusicController extends BaseController
         if (isset($apiResults['results'])) {
             foreach ($apiResults['results'] as $track) {
                 $transformedResults[] = [
+                    'id' => $track['id'] ?? $track['track_id'] ?? $track['song_id'] ?? '', // <-- Add this line
                     'audio' => $track['audio'] ?? $track['audiodownload'] ?? '',
                     'name' => $track['name'] ?? 'Unknown Track',
                     'artist_name' => $track['artist_name'] ?? 'Unknown Artist',

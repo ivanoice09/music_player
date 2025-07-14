@@ -101,11 +101,11 @@ class PlaylistController extends BaseController
         }
 
         // Check if this is a default playlist
-        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
-            header('HTTP/1.0 403 Forbidden');
-            echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
-            exit;
-        }
+        // if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+        //     header('HTTP/1.0 403 Forbidden');
+        //     echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
+        //     exit;
+        // }
 
         $success = $this->userModel->addSongToPlaylist($_SESSION['user_id'], $playlistId, $songId);
 
