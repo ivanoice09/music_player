@@ -32,7 +32,8 @@
           data-type="{{item_type}}">
         <div class="d-flex align-items-center">
           {{#if (eq item_type 'playlist')}}
-            <img src="{{image_url}}" width="60" height="60" class="me-3 rounded">
+            <!-- this shows the icon's image for each playlist (in the library for list mode) -->
+            <img src="{{image}}" width="60" height="60" class="me-3 rounded">
           {{else}}
             <img src="{{image}}" width="60" height="60" class="me-3 rounded">
           {{/if}}
