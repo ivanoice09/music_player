@@ -125,7 +125,6 @@ class Music
     //============
     // CALL ALBUMS
     //============
-
     public function getAlbum($albumId)
     {
         $url = "https://api.jamendo.com/v3.0/albums/?client_id={$this->clientId}&id={$albumId}&format=json";

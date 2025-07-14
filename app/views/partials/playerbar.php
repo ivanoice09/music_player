@@ -51,6 +51,8 @@
                     <div id="fullProgressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
                 </div>
                 <div class="d-flex justify-content-center align-items-center mb-3">
+                    <button id="addToPlaylistBtn" class="btn btn-link mx-3">
+                        <i class="fas fa-plus"></i>
                     <button id="fullPrevBtn" class="btn btn-link mx-3">
                         <i class="fas fa-step-backward fa-2x"></i>
                     </button>

@@ -1,6 +1,6 @@
 <!-- NAVBAR 2.0 -->
 <nav class="navbar-vertical fixed-left">
-    <div class="navbar-icons">
+    <div class="navbar-icons d-flex flex-column justify-content-center align-items-center" style="height: 80vh;">
         <!-- Profile Icon with Popover -->
         <div class="nav-item">
             <a class="nav-icon" 
