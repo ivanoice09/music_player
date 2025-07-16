@@ -1,21 +1,22 @@
 <?php
-class PlaylistController extends BaseController
-{
-    private $userModel;
+class PlaylistController extends BaseController {
 
-    public function __construct()
-    {
-        $this->userModel = new User();
+    private $playlistModel;
+    private $libraryModel;
+
+    public function __construct() {
+        $this->playlistModel = new Playlist();
+        $this->libraryModel = new Library();
     }
 
-    public function getPlaylists()
-    {
+    public function getPlaylists() {
+
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
             exit(json_encode(['error' => 'Unauthorized']));
         }
 
-        $playlists = $this->userModel->getUserPlaylists($_SESSION['user_id']);
+        $playlists = $this->playlistModel->getUserPlaylists($_SESSION['user_id']);
         if (!is_array($playlists)) {
             $playlists = [];
         }
@@ -25,8 +26,8 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    public function show($playlistId)
-    {
+    public function showPlaylist($playlistId) {
+
         // error_log("Received request for playlist ID: " . $playlistId);
 
         if (!isset($_SESSION['user_id'])) {
@@ -34,7 +35,7 @@ class PlaylistController extends BaseController
             exit(json_encode(['error' => 'Unauthorized']));
         }
 
-        $playlist = $this->userModel->getPlaylist($_SESSION['user_id'], $playlistId);
+        $playlist = $this->playlistModel->getPlaylist($_SESSION['user_id'], $playlistId);
 
         if (!$playlist) {
             http_response_code(404);
@@ -46,24 +47,24 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    public function create()
-    {
+    public function createPlaylist() {
+
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
             exit;
         }
 
-        $playlistCount = $this->userModel->getUserPlaylistCount($_SESSION['user_id']);
+        $playlistCount = $this->playlistModel->getUserPlaylistCount($_SESSION['user_id']);
         $newPlaylist = [
             'name' => 'MyPlaylist' . ($playlistCount + 1),
             'image_url' => URL_ROOT . '/assets/images/default-playlist-512px.png',
             'description' => ''
         ];
 
-        $playlistId = $this->userModel->createPlaylist($_SESSION['user_id'], $newPlaylist);
+        $playlistId = $this->playlistModel->createPlaylist($_SESSION['user_id'], $newPlaylist);
 
         // Add to library
-        $this->userModel->addToLibrary($_SESSION['user_id'], 'playlist', $playlistId, [
+        $this->libraryModel->addToLibrary($_SESSION['user_id'], 'playlist', $playlistId, [
             'name' => $newPlaylist['name'],
             'image_url' => $newPlaylist['image_url']
         ]);
@@ -80,11 +81,11 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    //======================
+    //====================
     //  PLAYLIST MODIFIERS  
-    //======================
-    public function addSong()
-    {
+    //====================
+
+    public function addTrack() {
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
             exit;
@@ -107,7 +108,7 @@ class PlaylistController extends BaseController
         //     exit;
         // }
 
-        $success = $this->userModel->addSongToPlaylist($_SESSION['user_id'], $playlistId, $songId);
+        $success = $this->playlistModel->addTrackToPlaylist($_SESSION['user_id'], $playlistId, $songId);
 
         echo json_encode([
             'success' => $success,
@@ -116,8 +117,8 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    public function removeSong()
-    {
+    public function removeTrack() {
+
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
             exit;
@@ -134,13 +135,13 @@ class PlaylistController extends BaseController
         }
 
         // Check if this is a default playlist
-        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+        if ($this->playlistModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
             header('HTTP/1.0 403 Forbidden');
             echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
             exit;
         }
 
-        $success = $this->userModel->removeSongFromPlaylist($_SESSION['user_id'], $playlistId, $songId);
+        $success = $this->playlistModel->removeTrackFromPlaylist($_SESSION['user_id'], $playlistId, $songId);
 
         echo json_encode([
             'success' => $success,
@@ -149,8 +150,8 @@ class PlaylistController extends BaseController
         exit;
     }
 
-    public function update()
-    {
+    public function updatePlaylist() {
+
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
             exit;
@@ -166,7 +167,7 @@ class PlaylistController extends BaseController
         }
 
         // Check if this is a default playlist
-        if ($this->userModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
+        if ($this->playlistModel->hasDefaultPlaylist($_SESSION['user_id']) == $playlistId) {
             header('HTTP/1.0 403 Forbidden');
             echo json_encode(['success' => false, 'message' => 'Default playlist cannot be modified']);
             exit;
@@ -183,7 +184,7 @@ class PlaylistController extends BaseController
             }
         }
 
-        $success = $this->userModel->updatePlaylist($_SESSION['user_id'], $playlistId, $data);
+        $success = $this->playlistModel->updatePlaylist($_SESSION['user_id'], $playlistId, $data);
 
         echo json_encode([
             'success' => $success,
@@ -191,4 +192,5 @@ class PlaylistController extends BaseController
         ]);
         exit;
     }
+
 }

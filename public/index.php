@@ -31,6 +31,7 @@ spl_autoload_register(function ($className) {
     $directories = [
         ROOT . '/app/controllers/',
         ROOT . '/app/models/',
+        ROOT . '/app/service/',
     ];
 
     foreach ($directories as $directory) {

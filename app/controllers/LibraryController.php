@@ -1,21 +1,23 @@
 <?php
-class LibraryController extends BaseController
-{
-    private $userModel;
+class LibraryController extends BaseController {
+
+    private $libraryModel;
+    private $playlistModel;
 
     public function __construct()
     {
-        $this->userModel = new User();
+        $this->playlistModel = new Playlist();
+        $this->libraryModel = new Library();
     }
 
     // Putting library items inside library
     /**
      * MODIFICATION @14:08 JUNE 10 2025:
      * handles both cases - when the page is reloaded or accessed through the url directly,
-     * the page goes automaitcally go back to home page
+     * the page goes automatically back to home page
      */
-    public function index()
-    {
+    public function index() {
+
         if (!isset($_SESSION['user_id'])) {
             if ($this->isAjaxRequest()) {
                 header('Content-Type: application/json');
@@ -31,14 +33,14 @@ class LibraryController extends BaseController
 
         try {
             // Ensure default playlist exists
-            if (!$this->userModel->hasDefaultPlaylist($_SESSION['user_id'])) {
-                $created = $this->userModel->createDefaultPlaylist($_SESSION['user_id']);
+            if (!$this->playlistModel->hasDefaultPlaylist($_SESSION['user_id'])) {
+                $created = $this->playlistModel->createDefaultPlaylist($_SESSION['user_id']);
                 if (!$created) {
                     error_log("Failed to create default playlist for user: " . $_SESSION['user_id']);
                 }
             }
 
-            $libraryItems = $this->userModel->getLibrary($_SESSION['user_id']);
+            $libraryItems = $this->libraryModel->getLibrary($_SESSION['user_id']);
 
             if ($this->isAjaxRequest()) {
                 // AJAX request - return JSON
@@ -70,7 +72,7 @@ class LibraryController extends BaseController
         }
     }
 
-    public function add()
+    public function addItem()
     {
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
@@ -88,7 +90,7 @@ class LibraryController extends BaseController
             exit;
         }
 
-        $result = $this->userModel->addToLibrary($_SESSION['user_id'], $type, $itemId, $metadata);
+        $result = $this->libraryModel->addToLibrary($_SESSION['user_id'], $type, $itemId, $metadata);
 
         echo json_encode([
             'success' => true,
@@ -97,7 +99,7 @@ class LibraryController extends BaseController
         exit;
     }
 
-    public function remove()
+    public function removeItem()
     {
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
@@ -113,7 +115,7 @@ class LibraryController extends BaseController
             exit;
         }
 
-        $success = $this->userModel->removeFromLibrary($_SESSION['user_id'], $itemId);
+        $success = $this->libraryModel->removeFromLibrary($_SESSION['user_id'], $itemId);
 
         echo json_encode([
             'success' => $success
@@ -121,7 +123,7 @@ class LibraryController extends BaseController
         exit;
     }
 
-    public function pin()
+    public function pinItem()
     {
         if (!isset($_SESSION['user_id'])) {
             header('HTTP/1.0 401 Unauthorized');
@@ -138,7 +140,7 @@ class LibraryController extends BaseController
             exit;
         }
 
-        $success = $this->userModel->togglePinLibraryItem($_SESSION['user_id'], $itemId, $pinned);
+        $success = $this->libraryModel->togglePinLibraryItem($_SESSION['user_id'], $itemId, $pinned);
 
         echo json_encode([
             'success' => $success,

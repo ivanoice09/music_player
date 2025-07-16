@@ -20,18 +20,20 @@ $routes = [
         'action' => 'authModal'
     ],
 
-    // MAIN PAGES
-    'main' => [ // route for page viewing
-        'controller' => 'MusicController',
+    // MAIN PAGE
+    'main' => [
+        'controller' => 'BaseController',
         'action' => 'loadView'
     ],
-    'search' => [ // route for search results page
-        'controller' => 'MusicController',
-        'action' => 'getSearchedSongs'
+
+    // TRACKS
+    'search' => [
+        'controller' => 'TrackController',
+        'action' => 'getAndShowSearchedTracks'
     ],
-    'popular' => [ // route for home page
-        'controller' => 'MusicController',
-        'action' => 'getPopularSongs'
+    'popular' => [
+        'controller' => 'TrackController',
+        'action' => 'getAndShowPopularTracks'
     ],
 
     // LIBRARY
@@ -41,33 +43,34 @@ $routes = [
     ],
     'library/add' => [
         'controller' => 'LibraryController',
-        'action' => 'add'
+        'action' => 'addItem'
     ],
     'library/remove' => [
         'controller' => 'LibraryController',
-        'action' => 'remove'
+        'action' => 'removeItem'
     ],
     'library/pin' => [
         'controller' => 'LibraryController',
-        'action' => 'pin'
+        'action' => 'pinItem'
     ],
 
-    // PLAYLIST
     /**
-     *   How my playlist flow works:
+     *  PLAYLISTS
      * 
-     *   1) user clicks on plus button "create playlist"
+     *  How my playlist flow works:
      * 
-     *   2) the playlist/create route gets used to create a playlist and to return user's ID 
-     *   through javascript's event listener
+     *  1) user clicks on plus button "create playlist"
      * 
-     *   3) PlaylistController invokes create() method
+     *  2) the playlist/create route gets used to create
+     *     a playlist and to return user's ID through javascript's event listener
      * 
-     *   4) create() method passes the data to javascript's loadPlaylistView function
+     *  3) PlaylistController invokes create() method
      * 
-     *   5) loadPlaylistView function invokes the `playlist/${playlistId}`
+     *  4) create() method passes the data to javascript's loadPlaylistView function
      * 
-     *   6) this `playlist/${playlistId}` route would show the playlist-view template
+     *  5) loadPlaylistView function invokes the `playlist/${playlistId}`
+     * 
+     *  6) this `playlist/${playlistId}` route would show the playlist-view template
      */
     'playlists' => [
         'controller' => 'PlaylistController',
@@ -75,23 +78,23 @@ $routes = [
     ],
     'playlist/create' => [
         'controller' => 'PlaylistController',
-        'action' => 'create'
+        'action' => 'createPlaylist'
     ],
     'playlist/(\d+)' => [
         'controller' => 'PlaylistController',
-        'action' => 'show'
+        'action' => 'showPlaylist'
     ],
     'playlist/add-song' => [
         'controller' => 'PlaylistController',
-        'action' => 'addSong'
+        'action' => 'addTrack'
     ],
     'playlist/remove-song' => [
         'controller' => 'PlaylistController',
-        'action' => 'removeSong'
+        'action' => 'removeTrack'
     ],
     'playlist/update' => [
         'controller' => 'PlaylistController',
-        'action' => 'update'
+        'action' => 'updatePlaylist'
     ],
 
     // DEBBUGGING
@@ -102,7 +105,7 @@ $routes = [
 
     // TEMPLATES
     'templates' => [
-        'controller' => 'MusicController',
+        'controller' => 'BaseController',
         'action' => 'loadTemplate'
     ],
 ];
