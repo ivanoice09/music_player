@@ -170,7 +170,7 @@ class Playlist {
         // 4. Fetch track details only if we have song IDs
         if (!empty($songIds)) {
             error_log('Song IDs: ' . print_r($songIds, true));
-            $tracks = $$this->trackModel->getJamendoTracksById($songIds);
+            $tracks = $this->trackModel->getJamendoTracksById($songIds);
             error_log('Tracks: ' . print_r($tracks, true));
 
             if (!empty($tracks['results'])) {
