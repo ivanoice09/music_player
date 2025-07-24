@@ -43,7 +43,7 @@ class Track {
         return ['results' => $allResults];
     }
 
-    // Get popular tracks through Jamendo API
+    // Get popular tracks through Jamendo API (return up to 10 by default)
     public function getJamendoPopularTracks($limit = 10) {
         $url = JAMENDO_BASE_URL . '/tracks/?client_id=' . $this->clientId .
             '&format=jsonpretty&limit=' . $limit . '&order=popularity_total';

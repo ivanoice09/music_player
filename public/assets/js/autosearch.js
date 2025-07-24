@@ -249,9 +249,7 @@ $(document).ready(function () {
     // =================
     // DISPLAY FUNCTIONS
     // =================
-    // Displays searching songs results
-    async function displayResults(results, title = '', templateName = 'song-grid') {
-        const mainContainer = $('#mainView');
+    async function setViewTemplate(results, title = '', templateName = 'song-grid') {
         if (results?.length > 0) {
             await loadTemplate(templateName);
             const source = templateCache[templateName];
@@ -392,7 +390,7 @@ $(document).ready(function () {
     function fetchPopularSongs() {
         $.ajax({
             url: 'popular',
-            success: (data) => displayResults(data, 'Popular Songs', 'song-grid'), // Template is changeable(in 3rd argument)
+            success: (data) => setViewTemplate(data, 'Popular Songs', 'song-grid'), // Template is changeable(in 3rd argument)
             error: () => showError('Error loading popular songs')
         });
     }
@@ -410,7 +408,7 @@ $(document).ready(function () {
         $.ajax({
             url: 'search',
             data: { q: query },
-            success: (data) => displayResults(data, `Results for "${query}"`, 'song-list'), // Template is changeable(in 3rd argument)
+            success: (data) => setViewTemplate(data, `Results for "${query}"`, 'song-list'), // Template is changeable(in 3rd argument)
             error: () => showError('Error loading results')
         });
     }

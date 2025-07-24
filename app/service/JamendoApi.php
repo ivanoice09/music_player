@@ -2,7 +2,6 @@
 
 class JamendoApi {
 
-    // Call Jamendo API
     public function callApi($url) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

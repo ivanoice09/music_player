@@ -8,7 +8,6 @@ class User
     public function __construct()
     {
         $this->db = new Database();
-        $this->musicModel = new Music();
         $this->playlistModel = new Playlist();
     }
 
@@ -48,6 +47,34 @@ class User
             }
         }
         return false;
+    }
+
+    // Find user by email (Very Important for authentication)
+    public function findUserByEmail($email)
+    {
+        $this->db->query('SELECT * FROM users WHERE email = :email');
+        $this->db->bind(':email', $email);
+        $this->db->single();
+
+        if ($this->db->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Find user by username (Very Important for authentication)
+    public function findUserByUsername($username)
+    {
+        $this->db->query('SELECT * FROM users WHERE username = :username');
+        $this->db->bind(':username', $username);
+        $this->db->single();
+
+        if ($this->db->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //=====================

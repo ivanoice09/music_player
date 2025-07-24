@@ -54,10 +54,7 @@ $routes = [
         'action' => 'pinItem'
     ],
 
-    /**
-     *  PLAYLISTS
-     * 
-     *  How my playlist flow works:
+    /** Explaination of how playlists work:
      * 
      *  1) user clicks on plus button "create playlist"
      * 

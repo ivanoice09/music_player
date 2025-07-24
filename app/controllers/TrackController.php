@@ -11,7 +11,7 @@ class TrackController {
     // fetch and show popular tracks
     public function getAndShowPopularTracks() {
 
-        // Get the results from Jamendo API
+        // Get the results from Jamendo API. Limit up to 20 songs
         $apiResults = $this->trackModel->getJamendoPopularTracks(20);
 
         // Transform the data to match what your JavaScript expects
