@@ -8,8 +8,8 @@ $(document).ready(function () {
         return /\/auth\/(login|register)/i.test(window.location.pathname);
     }
 
-    // Function to toggle playerbar visibility
-    function togglePlayerbar() {
+    // Function to hide playerbar
+    function hidePlayerbar() {
         if (isAuthPage()) {
             $('#playerBar, #fullPlayer').addClass('auth-hidden');
         } else {
@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
 
     // Initial check
-    togglePlayerbar();
+    hidePlayerbar();
 
     // ========================
     // HANDLEBARS CONFIGURATION
