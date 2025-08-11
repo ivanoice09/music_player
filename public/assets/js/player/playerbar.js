@@ -299,7 +299,7 @@ const playerState = {
     showAddToPlaylistModal() {
         if (!this.currentTrack) return;
 
-        const url = `${URL_ROOT}/playlists`;
+        const url = `${window.APP_CONFIG.URL_ROOT}/playlists`;
 
         $.get(url, (playlists) => {
             // Remove any existing modal
@@ -361,7 +361,7 @@ const playerState = {
 
     addToPlaylists: function (playlistIds) {
         if (!this.currentTrack || playlistIds.length === 0) return;
-        const url = `${URL_ROOT}/playlist/add-song`;
+        const url = `${window.APP_CONFIG.URL_ROOT}/playlist/add-song`;
 
         playlistIds.forEach(playlistId => {
             console.log('Adding song:', {

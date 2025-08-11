@@ -7,7 +7,9 @@ import { loadArtistView } from '../views/artist.js';
 import { loadAlbumView } from '../views/album.js';
 import { showError, showToast } from './error-handler.js';
 import { playerState } from '../player/playerbar.js';
-import { clickHandlers } from '../components/clickHandlers.js';
+import { navbarClickHandlers } from '../components/navbarClickHandlers.js';
+import { libraryClickHandlers } from '../components/libraryClickHandlers.js';
+import '../utils/handlebars-helpers.js';
 
 // app.js - Core application initialization
 export function initApp(config) {
@@ -35,11 +37,17 @@ export function initApp(config) {
         Promise.all(essentialTemplates.map(t => loadTemplate(t)))
             .then(() => {
                 loadInitialView();
-                // Initialize all click handlers
-                clickHandlers.setupHomeLink();
-                clickHandlers.setupSearchInput();
-                clickHandlers.setupLibraryLink();
-                clickHandlers.setupCreatePlaylistBtn();
+                // Initialize all navbar click handlers
+                navbarClickHandlers.setupHomeLink();
+                navbarClickHandlers.setupSearchInput();
+                navbarClickHandlers.setupLibraryLink();
+                navbarClickHandlers.setupCreatePlaylistBtn();
+                // Initialize library item click handlers
+                libraryClickHandlers.setupLibraryItemClickHandlers();
+                libraryClickHandlers.setupLibraryLayoutToggle();
+                libraryClickHandlers.setupLibrarySorting();
+                libraryClickHandlers.setupPinButton();
+                libraryClickHandlers.setupRemoveItemButton();
 
             })
             .catch(err => {

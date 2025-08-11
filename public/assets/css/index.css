@@ -53,6 +53,7 @@ body.music-layout .list-group-item {
 
 /* Scrollbar Styling (for modern browsers) */
 ::-webkit-scrollbar {
+    /* scrollbar disappears = 0px */
     width: 0px;
 }
 ::-webkit-scrollbar-track {

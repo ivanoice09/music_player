@@ -4,13 +4,11 @@ class AuthController extends BaseController
 {
     private $userModel;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->userModel = new User();
     }
 
-    public function register()
-    {
+    public function register() {
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Init data with proper sanitization
@@ -100,8 +98,7 @@ class AuthController extends BaseController
         }
     }
 
-    public function login()
-    {
+    public function login() {
         // Check for POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Init data with proper sanitization
@@ -165,16 +162,14 @@ class AuthController extends BaseController
         }
     }
 
-    public function createUserSession($user)
-    {
+    public function createUserSession($user) {
         $_SESSION['user_id'] = $user->id;
         $_SESSION['username'] = $this->sanitizeOutput($user->username);
         $_SESSION['email'] = $this->sanitizeOutput($user->email);
         redirect('main');
     }
 
-    public function logout()
-    {
+    public function logout() {
         unset($_SESSION['user_id']);
         unset($_SESSION['username']);
         unset($_SESSION['email']);
@@ -185,8 +180,7 @@ class AuthController extends BaseController
     /**
      * Sanitize general input
      */
-    private function sanitizeInput($data)
-    {
+    private function sanitizeInput($data) {
         $data = trim($data);
         $data = stripslashes($data);
         return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
@@ -195,8 +189,7 @@ class AuthController extends BaseController
     /**
      * Sanitize email specifically
      */
-    private function sanitizeEmail($email)
-    {
+    private function sanitizeEmail($email) {
         $email = trim($email);
         $email = stripslashes($email);
         $email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');

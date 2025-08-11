@@ -1,11 +1,13 @@
 import { showPopularSongs } from '../views/homepage.js';
 import { loadSearchView } from '../views/search.js';
+import { loadLibraryView } from '../views/library.js';
+import { createNewPlaylist } from '../views/playlist.js';
 import { checkAuth, showAuthRequiredModal } from '../core/auth.js';
 
 let debounceTimer;
 
 // Handle popular songs anchor click
-export function setupHomeLink() {
+function setupHomeLink() {
     $('#homeLink').click(function (e) {
         e.preventDefault(); // Prevent default anchor behavior
         showPopularSongs(); // New consolidated function
@@ -13,7 +15,7 @@ export function setupHomeLink() {
 }
 
 // Auto-search with debounce (500ms delay)
-export function setupSearchInput() {
+function setupSearchInput() {
     $('#searchInput').keyup(function () {
         const query = $(this).val().trim();
         clearTimeout(debounceTimer);
@@ -30,7 +32,7 @@ export function setupSearchInput() {
 }
 
 // Initialize when library link is clicked
-export function setupLibraryLink() {
+function setupLibraryLink() {
     $('#library-link').on('click', function (e) {
         e.preventDefault();
         if (!checkAuth()) {
@@ -42,7 +44,7 @@ export function setupLibraryLink() {
 }
 
 // Add event listener to create playlist
-export function setupCreatePlaylistBtn() {
+function setupCreatePlaylistBtn() {
     $('#createPlaylistBtn').click(function (e) {
         e.preventDefault();
         if (!checkAuth()) {
@@ -54,7 +56,7 @@ export function setupCreatePlaylistBtn() {
 }
 
 // Export all functions as a single object for convenience
-export const clickHandlers = {
+export const navbarClickHandlers = {
     setupHomeLink,
     setupSearchInput,
     setupLibraryLink,
