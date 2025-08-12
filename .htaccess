@@ -1,0 +1,28 @@
+# Disable directory listings
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block direct access to the views folder
+    RewriteRule ^app/views/ - [F,L]
+
+    # Remove trailing slash if not a folder
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Route all non-existing files/directories to index.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+    # Preserve Authorization header
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    # Fallback if mod_rewrite is not available
+    ErrorDocument 404 /index.php
+</IfModule>

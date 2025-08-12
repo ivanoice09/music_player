@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 //======================
 // Define path constants
 //======================
-define('ROOT', dirname(__DIR__));
+define('ROOT', __DIR__);
 define('DS', DIRECTORY_SEPARATOR);
 
 // Load BaseController first (since other controllers extend it)
