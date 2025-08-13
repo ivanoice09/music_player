@@ -1,0 +1,106 @@
+/* Default Layout (Auth Pages) */
+body.default-layout {
+    background-color: #f8f9fa;
+}
+
+/* Music Layout */
+body.music-layout {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    margin-left: 5%;
+    padding-top: 80px;
+}
+
+/* Only apply dark cards in music layout */
+body.music-layout .card,
+body.music-layout .list-group-item {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+/* Flash messages */
+#msg-flash {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    min-width: 300px;
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+/* Add Smooth Transitions: */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styling (for modern browsers) */
+::-webkit-scrollbar {
+    /* scrollbar disappears = 0px */
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+}
+
+/* ============ */
+/* POPOVER MENU */
+/* ============ */
+.popover-profile-menu {
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.popover-profile-menu .dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+}
+
+.popover-profile-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.popover-profile-menu .bi {
+    margin-right: 0.5rem;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: #333;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
