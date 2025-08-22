@@ -24,7 +24,6 @@
 
     <!-- Main javascript file -->
     <script type="module" src="<?php echo URL_ROOT; ?>/assets/js/core/app.js"></script>
-
 </footer>
 </body>
 </html>

@@ -26,3 +26,22 @@ export function showAuthRequiredModal() {
         window.location.href = authStatus.loginUrl;
     });
 }
+
+// Show password visibility in login and register pages
+export function showPasswordToggler(password, showPassword) {
+    const passwordInput = document.getElementById(password);
+    const showPasswordCheckbox = document.getElementById(showPassword);
+    
+    if (!passwordInput || !showPasswordCheckbox) {
+        console.error('Password field or checkbox not found');
+        return;
+    }
+    
+    showPasswordCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    });
+}

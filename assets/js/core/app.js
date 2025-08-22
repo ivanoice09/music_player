@@ -9,6 +9,7 @@ import { showError, showToast } from './error-handler.js';
 import { playerState } from '../player/playerbar.js';
 import { navbarClickHandlers } from '../components/navbarClickHandlers.js';
 import { libraryClickHandlers } from '../components/libraryClickHandlers.js';
+import { showPasswordToggler } from './auth.js';
 import '../utils/handlebars-helpers.js';
 
 // app.js - Core application initialization
@@ -22,6 +23,9 @@ export function initApp(config) {
 
         // Initialize player state
         playerState.init(); // Initialize the player
+
+        // Initialize password togglers if on login/register pages
+        initializePasswordTogglers();
 
         // Pre-load essential templates
         const essentialTemplates = [
@@ -65,9 +69,8 @@ export function initApp(config) {
             showToast
         };
 
-        //=========
-        // POPSTATE
-        //=========
+
+        // Popstate
         window.addEventListener('popstate', (event) => {
             if (event.state?.view === 'search') {
                 performSearch(event.state.query);
@@ -82,4 +85,23 @@ export function initApp(config) {
             }
         });
     });
+}
+
+// show password toggler
+function initializePasswordTogglers() {
+    // Check if we're on a page with password fields
+    const hasPasswordField = document.getElementById('password');
+    const hasShowPasswordCheckbox = document.getElementById('showPassword');
+    
+    if (hasPasswordField && hasShowPasswordCheckbox) {
+        showPasswordToggler('password', 'showPassword');
+    }
+    
+    // You can add additional checks for other pages
+    const hasConfirmPasswordField = document.getElementById('confirmPassword');
+    const hasShowConfirmPasswordCheckbox = document.getElementById('showConfirmPassword');
+    
+    if (hasConfirmPasswordField && hasShowConfirmPasswordCheckbox) {
+        showPasswordToggler('confirmPassword', 'showConfirmPassword');
+    }
 }
