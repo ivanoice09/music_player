@@ -1,19 +1,12 @@
-/* Default Layout (Auth Pages) */
-body.default-layout {
-    background-color: #f8f9fa;
-}
-
-/* Music Layout */
-body.music-layout {
-    background-color: #2d2d2d;
-    color: #e0e0e0;
-    margin-left: 5%;
-    padding-top: 80px;
+body {
+    background-color: #333;
+    color: white;
+    padding-top: 20px;
 }
 
 /* Only apply dark cards in music layout */
-body.music-layout .card,
-body.music-layout .list-group-item {
+body .card,
+body .list-group-item {
     background-color: #1e1e1e;
     border-color: #333;
 }

@@ -17,29 +17,26 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playerbar.css">
     <!-- SONG CARDS style -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/songCards.css">
-
-    <!-- NAVBAR STYLE 2.0 -->
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/sidenavbar.css">
     <!-- SEARCH BAR -->
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/searchbar.css">
-
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/floatingSearchbar.css">
+    <!-- BUTTON SIDEBAR -->
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/buttonSideBar.css">
     <!-- LIBRARY -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/library.css">
     <!-- PLAYLIST -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playlist.css">
-
     <!-- AUTH MODAL -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/authModal.css">
-
     <!-- HANDLEBARS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 </head>
 
 <!-- This 'is_music_page' is for destinguishing the layouts for css styles application -->
-<body class="<?php echo isset($data['is_music_page']) ? 'music-layout' : 'default-layout'; ?>">
+<body>
     <?php
     // Only show navbar if not explicitly hidden
     if (!isset($data['hide_navbar']) || !$data['hide_navbar']) {
-        require_once APP_ROOT . '/app/views/partials/sidenavbar.php';
+        require_once APP_ROOT . '/app/views/partials/buttonSideBar.php';
         require_once APP_ROOT . '/app/views/partials/floatingSearchBar.php';
+        require_once APP_ROOT . '/app/views/partials/offCanvasSidenavbar.php';
     }
