@@ -1,3 +1,13 @@
+<?php
+function getVersionedFile($filePath) {
+    $fullPath = $_SERVER['DOCUMENT_ROOT'] . $filePath;
+    if (file_exists($fullPath)) {
+        return $filePath . '?v=' . filemtime($fullPath);
+    }
+    return $filePath; // fallback
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,15 +22,13 @@
     <!-- FONT-AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- HOME PAGE MAIN STYLE -->
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/index.css">
+    <link rel="stylesheet" href="<?php echo getVersionedFile(URL_ROOT . '/assets/css/main.css') ;?>">
     <!-- PLAYERBAR style -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/playerbar.css">
     <!-- SONG CARDS style -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/songCards.css">
     <!-- SEARCH BAR -->
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/floatingSearchbar.css">
-    <!-- BUTTON SIDEBAR -->
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/buttonSideBar.css">
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/navbar.css">
     <!-- LIBRARY -->
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/assets/css/library.css">
     <!-- PLAYLIST -->
@@ -36,7 +44,6 @@
     <?php
     // Only show navbar if not explicitly hidden
     if (!isset($data['hide_navbar']) || !$data['hide_navbar']) {
-        require_once APP_ROOT . '/app/views/partials/buttonSideBar.php';
-        require_once APP_ROOT . '/app/views/partials/floatingSearchBar.php';
+        require_once APP_ROOT . '/app/views/partials/navbar.php';
         require_once APP_ROOT . '/app/views/partials/offCanvasSidenavbar.php';
     }
