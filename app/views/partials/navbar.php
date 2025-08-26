@@ -28,15 +28,17 @@
             </div>
 
             <!-- FLOATING SEARCH BAR -->
-            <div class="d-flex">
-                <div class="floating-search position-relative mx-auto">
-                    <input type="text"
-                        id="searchInput"
-                        class="form-control"
-                        placeholder="Search for songs, artists..."
-                        aria-label="Search"
-                        value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
-                    <i class="fas fa-search search-icon position-absolute top-50 translate-middle-y" style="left: 15px;"></i>
+            <div class="floating-search-container d-flex">
+                <div class="search-bar" id="searchBar">
+                    <div class="floating-search position-relative mx-auto">
+                        <input type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search for songs, artists..."
+                            aria-label="Search"
+                            value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+                        <i class="fas fa-search search-icon position-absolute top-50 translate-middle-y" style="left: 15px;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,6 +52,9 @@
         const fabIcon = document.getElementById('fabIcon');
         const fabContent = document.getElementById('fabContent');
         const fabIcons = document.getElementById('fabIcons');
+        const searchBar = document.getElementById('searchBar');
+        const searchInput = document.getElementById('searchInput');
+
         let expanded = false;
         let isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -71,23 +76,24 @@
             expanded = !expanded;
 
             if (expanded) {
-                if (isMobile) {
-                    fab.classList.add('fab-expanded-mobile');
-                    fabContent.classList.add('fab-content-vertical');
-                    fabIcons.classList.add('fab-icons-vertical');
-                } else {
-                    fab.classList.add('fab-expanded');
-                }
-                fab.classList.remove('pulse');
+                fab.classList.add('fab-expanded');
                 fabIcon.classList.remove('fa-bars');
                 fabIcon.classList.add('fa-times');
+
+                // Only shrink search bar on mobile
+                if (isMobile) {
+                    searchBar.classList.add('search-bar-shrinked');
+                    searchInput.blur(); // Remove focus from search input
+                }
             } else {
-                fab.classList.remove('fab-expanded', 'fab-expanded-mobile');
-                fabContent.classList.remove('fab-content-vertical');
-                fabIcons.classList.remove('fab-icons-vertical');
-                fab.classList.add('pulse');
+                fab.classList.remove('fab-expanded');
                 fabIcon.classList.remove('fa-times');
                 fabIcon.classList.add('fa-bars');
+
+                // Restore search bar if it was shrunk
+                if (isMobile) {
+                    searchBar.classList.remove('search-bar-shrinked');
+                }
             }
         }
 
@@ -100,7 +106,18 @@
         fabIconElements.forEach(icon => {
             icon.addEventListener('click', function(e) {
                 e.stopPropagation();
+                // Close the menu when an icon is clicked on mobile
+                if (isMobile && expanded) {
+                    toggleFab();
+                }
             });
+        });
+
+        // Close menu when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if (isMobile && expanded && !fab.contains(e.target)) {
+                toggleFab();
+            }
         });
     });
 </script>
